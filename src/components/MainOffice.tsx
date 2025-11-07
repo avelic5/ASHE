@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
 import { ActivityCard } from "./ActivityCard";
-import { Brain, Image, MessageSquare, HelpCircle, Sparkles } from "lucide-react";
+import {
+  Brain,
+  Image,
+  MessageSquare,
+  HelpCircle,
+  Sparkles,
+} from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
 interface MainOfficeProps {
@@ -13,9 +19,19 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
   const [notes, setNotes] = useState("");
 
   const activities = [
-    { title: "Problem Cards", icon: MessageSquare, color: "var(--pastel-lavender)", id: "problem-cards" },
-    { title: "Rorschach Test", icon: Image,          color: "var(--pastel-sky)",      id: "rorschach" },
-    { title: "TAT Test",       icon: Brain,          color: "var(--pastel-mint)",     id: "tat" },
+    {
+      title: "Problem Cards",
+      icon: MessageSquare,
+      color: "var(--pastel-lavender)",
+      id: "problem-cards",
+    },
+    {
+      title: "Rorschach Test",
+      icon: Image,
+      color: "var(--pastel-sky)",
+      id: "rorschach",
+    },
+    { title: "TAT Test", icon: Brain, color: "var(--pastel-mint)", id: "tat" },
   ];
 
   return (
@@ -46,7 +62,11 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
 
       {/* Top Navigation */}
       <nav className="relative z-10 flex items-center justify-between p-6">
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-3">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-3"
+        >
           <div
             className="w-12 h-12 rounded-2xl flex items-center justify-center"
             style={{ backgroundColor: "var(--pastel-lavender)" }}
@@ -59,7 +79,11 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
           </div>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-4">
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-4"
+        >
           <div className="hidden md:block text-right">
             <p className="text-sm text-muted-foreground">Session 1 of 1</p>
             <p className="text-xs text-muted-foreground">Intro simulation</p>
@@ -70,6 +94,74 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
         </motion.div>
       </nav>
 
+      {/* Chat panel (bottom-left) */}
+      <motion.aside
+        role="dialog"
+        aria-label="Notes"
+        aria-modal="false"
+        className="fixed left-4 bottom-4 z-50 w-full max-w-md"
+        initial={{ opacity: 0, y: 8, scale: 0.98 }}
+        animate={{
+          opacity: notesOpen ? 1 : 0,
+          y: notesOpen ? 0 : 8,
+          scale: notesOpen ? 1 : 0.98,
+        }}
+        transition={{ type: "spring", stiffness: 260, damping: 22 }}
+        style={{ pointerEvents: notesOpen ? "auto" : "none" }}
+      >
+        <div className="w-full rounded-2xl p-4 bg-white/70 backdrop-blur shadow-2xl border-2 border-border flex flex-col gap-3">
+          {/* Avatar relocated into panel (left) when open */}
+          <div className="flex items-start gap-3">
+            <motion.div
+              layoutId="session-avatar"
+              className="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-xl"
+            >
+              <ImageWithFallback
+                src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=512&q=80"
+                alt="AI Agent"
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+            <div className="flex-1 flex items-start justify-between gap-2">
+              <div>
+                <h3 className="text-sm font-medium text-foreground">
+                  Session notes
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  Jot ideas here. AI assist coming soon.
+                </p>
+              </div>
+              <button
+                onClick={() => setNotesOpen(false)}
+                className="h-8 px-3 rounded-xl text-xs bg-white/60 hover:bg-white/80 border border-border text-foreground"
+              >
+                Hide
+              </button>
+            </div>
+          </div>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Type your message..."
+            className="min-h-24 max-h-40 rounded-xl p-3 text-sm bg-white/50 placeholder:text-muted-foreground text-foreground border-2 border-border outline-none focus:ring-2 focus:ring-[var(--focus-outline)] resize-none"
+          />
+          <div className="flex items-center justify-end gap-2">
+            <button
+              onClick={() => setNotes("")}
+              className="h-8 px-3 rounded-xl text-xs bg-transparent hover:bg-white/60 border border-border text-muted-foreground"
+            >
+              Clear
+            </button>
+            <button
+              onClick={() => setNotesOpen(false)}
+              className="h-8 px-3 rounded-xl text-xs bg-primary text-white hover:bg-primary/90"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </motion.aside>
+
       {/* Main content: kolona + raste preko min visine; centrira se kad je chat otvoren */}
       <motion.main
         layout
@@ -79,69 +171,26 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
                     flex flex-col items-center
                     ${notesOpen ? "justify-center" : "justify-start"}`}
       >
-        {/* Avatar */}
-        <motion.button
-          type="button"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.15 }}
-          onClick={() => setNotesOpen(true)}
-          className="mt-4 mb-4 sm:mb-5 flex justify-center cursor-pointer hover:scale-105 transition-transform focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--focus-outline)]"
-        >
-          <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden shadow-2xl border-4 border-white">
-            <ImageWithFallback
-              src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=512&q=80"
-              alt="AI Agent"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </motion.button>
-
-        {/* Chat inline (NE overlayera ništa, sve ide ispod) */}
-        {notesOpen && (
-          <motion.aside
-            layout
-            role="dialog"
-            aria-label="Notes"
-            aria-modal="false"
-            initial={{ opacity: 0, y: -8, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ type: "spring", stiffness: 260, damping: 22 }}
-            className="w-full max-w-md rounded-2xl p-4 bg-white/70 backdrop-blur shadow-2xl border-2 border-border flex flex-col gap-3"
+        {/* Center avatar (moves into panel on click) */}
+        {!notesOpen && (
+          <motion.button
+            type="button"
+            layoutId="session-avatar"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            onClick={() => setNotesOpen(true)}
+            className="mb-6 rounded-full focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--focus-outline)]"
+            aria-label="Open notes panel"
           >
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-medium text-foreground">Session notes</h3>
-                <p className="text-xs text-muted-foreground">Jot ideas here. AI assist coming soon.</p>
-              </div>
-              <button
-                onClick={() => setNotesOpen(false)}
-                className="h-8 px-3 rounded-xl text-xs bg-white/60 hover:bg-white/80 border border-border text-foreground"
-              >
-                Hide
-              </button>
+            <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-full overflow-hidden shadow-2xl border-4 border-white ring-4 ring-white/20">
+              <ImageWithFallback
+                src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=512&q=80"
+                alt="AI Agent"
+                className="w-full h-full object-cover"
+              />
             </div>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Type your message..."
-              className="min-h-24 max-h-40 rounded-xl p-3 text-sm bg-white/50 placeholder:text-muted-foreground text-foreground border-2 border-border outline-none focus:ring-2 focus:ring-[var(--focus-outline)] resize-none"
-            />
-            <div className="flex items-center justify-end gap-2">
-              <button
-                onClick={() => setNotes("")}
-                className="h-8 px-3 rounded-xl text-xs bg-transparent hover:bg-white/60 border border-border text-muted-foreground"
-              >
-                Clear
-              </button>
-              <button
-                onClick={() => setNotesOpen(false)}
-                className="h-8 px-3 rounded-xl text-xs bg-primary text-white hover:bg-primary/90"
-              >
-                Done
-              </button>
-            </div>
-          </motion.aside>
+          </motion.button>
         )}
 
         {/* Tekst — dodatno spušten; još niže kad je chat otvoren */}
@@ -150,12 +199,16 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className={`text-center max-w-2xl w-full ${notesOpen ? "mt-12" : "mt-16"}`}
+          className={`text-center max-w-2xl w-full ${
+            notesOpen ? "mt-12" : "mt-16"
+          }`}
         >
-          <h2 className="mb-4 text-foreground">Welcome to Your First Session</h2>
+          <h2 className="mb-4 text-foreground">
+            Welcome to Your First Session
+          </h2>
           <p className="text-muted-foreground">
-            Choose an activity below to begin your journey of self-discovery. Take your time,
-            and remember: this is a safe space.
+            Choose an activity below to begin your journey of self-discovery.
+            Take your time, and remember: this is a safe space.
           </p>
         </motion.div>
 
@@ -172,21 +225,25 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
               aria-hidden
               className="absolute -inset-6 sm:-inset-8 rounded-[2rem] sm:rounded-[3rem]"
               style={{
-                background: "linear-gradient(145deg,var(--pastel-cream), var(--pastel-peach) 120%)",
+                background:
+                  "linear-gradient(145deg,var(--pastel-cream), var(--pastel-peach) 120%)",
                 boxShadow: "0 24px 70px rgba(139, 127, 184, 0.25)",
                 opacity: 0.85,
                 filter: "blur(2px)",
               }}
             />
-            <div className="relative flex flex-col /* mobile-first: kolona */
+            <div
+              className="relative flex flex-col /* mobile-first: kolona */
                                 sm:flex-row sm:flex-wrap /* od sm: wrap */
-                                gap-5 sm:gap-8 justify-center p-6 sm:p-10">
+                                gap-5 sm:gap-8 justify-center p-6 sm:p-10"
+            >
               {activities.map((activity, index) => (
                 <motion.div
                   key={activity.id}
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.35 + index * 0.08 }}
+                  className="p-3 sm:p-4"
                 >
                   <ActivityCard
                     title={activity.title}
