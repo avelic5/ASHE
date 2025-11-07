@@ -15,7 +15,7 @@ import {
 interface AnalysisReportProps {
   problem?: string;
   answers: string[];
-  testType: "problem-cards" | "rorschach" | "tat";
+  testType: "problem-cards" | "self-esteem" | "tat";
   onBookSession: () => void;
   onTryAnother: () => void;
 }
@@ -32,8 +32,8 @@ export function AnalysisReport({
     switch (testType) {
       case "problem-cards":
         return "Problem Cards Session";
-      case "rorschach":
-        return "Rorschach Test";
+      case "self-esteem":
+        return "Self-Esteem Assessment";
       case "tat":
         return "TAT Test";
     }
