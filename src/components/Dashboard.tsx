@@ -1,9 +1,9 @@
+import React, { useState } from "react";
 import { motion } from "motion/react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
 import { Checkbox } from "./ui/checkbox";
-import { useState } from "react";
 import {
   Calendar,
   Video,

@@ -1,7 +1,7 @@
+import React, { useState } from "react";
 import { motion } from "motion/react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { useState } from "react";
 
 interface QuestionCardProps {
   question: string;
