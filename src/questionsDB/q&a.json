@@ -126,6 +126,260 @@
           }
         ]
       }
+    ],
+    "depression": [
+      {
+        "question": "What is the first word that comes to your mind when you hear happiness?",
+        "answers": [
+          {
+            "answer": "Distant",
+            "description": "You feel disconnected from positive emotions.",
+            "suggestion": "Try to notice and appreciate small moments of joy each day."
+          },
+          {
+            "answer": "Fake",
+            "description": "You feel that happiness is not real or lasting.",
+            "suggestion": "Practice gratitude and acknowledge small successes."
+          },
+          {
+            "answer": "Family",
+            "description": "You find comfort and support from close relationships.",
+            "suggestion": "Nurture relationships that give you a sense of belonging."
+          },
+          {
+            "answer": "Peace",
+            "description": "You associate happiness with inner calm.",
+            "suggestion": "Work on balancing obligations with personal rest and relaxation."
+          }
+        ]
+      },
+      {
+        "question": "When you think about yourself, what is the first word that comes to your mind?",
+        "answers": [
+          {
+            "answer": "Tired",
+            "description": "You feel emotionally and physically drained.",
+            "suggestion": "Give yourself time for rest and recovery."
+          },
+          {
+            "answer": "Worthless",
+            "description": "Low self-esteem influences your self-image.",
+            "suggestion": "Recall times when you contributed positively to others."
+          },
+          {
+            "answer": "Change",
+            "description": "You are looking for a way to improve your current state.",
+            "suggestion": "Set small and achievable goals to move forward."
+          },
+          {
+            "answer": "Hope",
+            "description": "You have a desire for a better future.",
+            "suggestion": "Nurture this feeling through small positive actions each day."
+          }
+        ]
+      },
+      {
+        "question": "When you hear the word morning, what is the first word that comes to your mind?",
+        "answers": [
+          {
+            "answer": "Hard",
+            "description": "Waking up feels like a challenge.",
+            "suggestion": "Create a gentle morning routine that motivates you."
+          },
+          {
+            "answer": "Beginning",
+            "description": "You see morning as an opportunity for a fresh start.",
+            "suggestion": "Plan small achievable goals to maintain this positive perspective."
+          },
+          {
+            "answer": "Lack of energy",
+            "description": "You often feel low on energy at the start of the day.",
+            "suggestion": "Include light physical activity in your morning routine."
+          },
+          {
+            "answer": "Calm",
+            "description": "You enjoy quiet and slow starts to the day.",
+            "suggestion": "Use the morning for reflection or meditation."
+          }
+        ]
+      },
+      {
+        "question": "When you think of the past, what is the first word that comes to your mind?",
+        "answers": [
+          {
+            "answer": "Guilt",
+            "description": "You focus on past mistakes.",
+            "suggestion": "Remember that you did your best in those situations."
+          },
+          {
+            "answer": "Memories",
+            "description": "Thinking about the past brings nostalgia and sometimes sadness.",
+            "suggestion": "Try to also recall positive moments from the past."
+          },
+          {
+            "answer": "Mistakes",
+            "description": "You focus on things that went wrong.",
+            "suggestion": "Turn past experiences into lessons rather than burdens."
+          },
+          {
+            "answer": "Peace",
+            "description": "You have made peace with what has already happened.",
+            "suggestion": "Maintain that sense of acceptance."
+          }
+        ]
+      },
+      {
+        "question": "When you think about your daily life, what is the first word that comes to your mind?",
+        "answers": [
+          {
+            "answer": "Overwhelmed",
+            "description": "Daily responsibilities feel too much at times.",
+            "suggestion": "Break tasks into small steps and prioritize them."
+          },
+          {
+            "answer": "Routine",
+            "description": "Life feels repetitive and unexciting.",
+            "suggestion": "Add small variations to your daily activities."
+          },
+          {
+            "answer": "Stress",
+            "description": "You feel constant pressure from responsibilities.",
+            "suggestion": "Use relaxation techniques and self-care breaks regularly."
+          },
+          {
+            "answer": "Motivation",
+            "description": "You look for reasons to keep going despite challenges.",
+            "suggestion": "Focus on small, achievable goals to build momentum."
+          }
+        ]
+      }
+    ],
+    "adhd": [
+      {
+        "question": "When you hear the word focus, what is the first word that comes to your mind?",
+        "answers": [
+          {
+            "answer": "Hard",
+            "description": "It is difficult for you to maintain concentration for long periods.",
+            "suggestion": "Use short work intervals followed by brief breaks."
+          },
+          {
+            "answer": "None",
+            "description": "Your thoughts often wander in many directions.",
+            "suggestion": "Write down your ideas immediately to reduce mental clutter."
+          },
+          {
+            "answer": "Interesting",
+            "description": "You can focus only when the topic captures your full attention.",
+            "suggestion": "Connect tasks with personal interests to increase engagement."
+          },
+          {
+            "answer": "Chaos",
+            "description": "You feel overwhelmed by the many thoughts running through your mind.",
+            "suggestion": "Organize your workspace and use reminders to stay on track."
+          }
+        ]
+      },
+      {
+        "question": "When you think of school or work, what is the first word that comes to your mind?",
+        "answers": [
+          {
+            "answer": "Boring",
+            "description": "Routine tasks are difficult for you to focus on.",
+            "suggestion": "Add variety to your daily schedule to maintain attention."
+          },
+          {
+            "answer": "Stress",
+            "description": "You feel pressure from deadlines and responsibilities.",
+            "suggestion": "Break large tasks into smaller, manageable steps."
+          },
+          {
+            "answer": "Exciting",
+            "description": "You are motivated when challenges capture your interest.",
+            "suggestion": "Seek opportunities that allow you to be creative."
+          },
+          {
+            "answer": "Chaotic",
+            "description": "Lack of structure makes it difficult for you to manage tasks.",
+            "suggestion": "Create a simple daily plan or to-do list to follow."
+          }
+        ]
+      },
+      {
+        "question": "When you hear the word peace, what is the first word that comes to your mind?",
+        "answers": [
+          {
+            "answer": "Boredom",
+            "description": "Periods of silence can make you feel uneasy.",
+            "suggestion": "Use short moments of calm to reset your mind."
+          },
+          {
+            "answer": "Silence",
+            "description": "You look for a space free of distractions.",
+            "suggestion": "Create a quiet corner where you can recharge your energy."
+          },
+          {
+            "answer": "Restlessness",
+            "description": "Stillness feels uncomfortable because you are constantly in motion.",
+            "suggestion": "Practice mindfulness while moving, such as during walks."
+          },
+          {
+            "answer": "Rest",
+            "description": "You are able to recognize when your body and mind need a break.",
+            "suggestion": "Include short rest periods throughout the day."
+          }
+        ]
+      },
+      {
+        "question": "When you think of planning, what is the first word that comes to your mind?",
+        "answers": [
+          {
+            "answer": "Confusion",
+            "description": "You find it difficult to keep track of all your tasks and obligations.",
+            "suggestion": "Use planning tools and apps with reminders to stay organized."
+          },
+          {
+            "answer": "Impossible",
+            "description": "You feel that plans rarely work for you.",
+            "suggestion": "Focus on flexible goals instead of rigid schedules."
+          },
+          {
+            "answer": "Motivation",
+            "description": "Planning helps you to take action and move forward.",
+            "suggestion": "Maintain this energy by setting small and achievable goals."
+          },
+          {
+            "answer": "Chaos",
+            "description": "You get lost in too many ideas at once.",
+            "suggestion": "Prioritize three main tasks per day to stay on track."
+          }
+        ]
+      },
+      {
+        "question": "When you think about tasks, what is the first word that comes to your mind?",
+        "answers": [
+          {
+            "answer": "Overwhelmed",
+            "description": "You often feel there are too many tasks to manage.",
+            "suggestion": "Break tasks into smaller steps and tackle them one by one."
+          },
+          {
+            "answer": "Procrastination",
+            "description": "You delay starting tasks that feel difficult or boring.",
+            "suggestion": "Set small starting points to overcome avoidance."
+          },
+          {
+            "answer": "Energy",
+            "description": "Your ability to complete tasks depends on your interest level.",
+            "suggestion": "Match tasks with moments when you have more energy or focus."
+          },
+          {
+            "answer": "Distraction",
+            "description": "You are easily distracted by surrounding stimuli.",
+            "suggestion": "Reduce distractions and create a focused workspace."
+          }
+        ]
+      }
     ]
   }
 }
