@@ -496,7 +496,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
         </motion.p>
       </motion.main>
 
-      // <AmongUS/>
+  
     </div>
   );
 }
