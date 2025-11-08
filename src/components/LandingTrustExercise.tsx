@@ -19,21 +19,22 @@ type Props = {
 
 const tips: Record<string, string[]> = {
   low: [
-    "Danas probaj 2 kratke šetnje po 5 min.",
-    "Napiši jednu rečenicu: ‘Šta mi sada treba?’.",
-    "Pozovi prijatelja samo da kažeš ‘hej’.",
+    "Try taking two short 5-minute walks today.",
+    "Write one sentence: ‘What do I need right now?’",
+    "Call a friend just to say ‘hey’.",
   ],
   mid: [
-    "Izdvoji 10 min za zadatak koji odgađaš.",
-    "Napravi plan za 1 mali korak do cilja.",
-    "Zahvali sebi za jednu malu stvar danas.",
+    "Spend 10 minutes on a task you’ve been postponing.",
+    "Make a plan for one small step toward your goal.",
+    "Thank yourself for one small thing today.",
   ],
   high: [
-    "Podijeli nešto dobro sa nekim koga cijeniš.",
-    "Zapiši 3 stvari na kojima si zahvalan.",
-    "Napravi playlistu od 3 pjesme za fokus.",
+    "Share something good with someone you appreciate.",
+    "Write down 3 things you’re grateful for.",
+    "Create a playlist of 3 songs to help you focus.",
   ],
 };
+
 
 export default function LandingTrustExercise({ onStart }: Props) {
   const [phase, setPhase] = useState<"breath" |"cofeeTea"| "miniGame" | "done">(
@@ -45,7 +46,7 @@ export default function LandingTrustExercise({ onStart }: Props) {
   const [ack, setAck] = useState(false);
 
   // simple 4-7-8 cycle lengths in seconds
-  const cycle = [4, 7, 8];
+  const cycle = [2, 3, 5];
   const total = cycle.reduce((a, b) => a + b, 0);
 
   useEffect(() => {
@@ -65,15 +66,15 @@ export default function LandingTrustExercise({ onStart }: Props) {
   const cycleState = useMemo(() => {
     const t = timer % total;
     if (t < cycle[0])
-      return { label: "Udah (4)", stage: "in" as const, prog: t / cycle[0] };
+      return { label: "Udah (2)", stage: "in" as const, prog: t / cycle[0] };
     if (t < cycle[0] + cycle[1])
       return {
-        label: "Zadrži (7)",
+        label: "Zadrži (3)",
         stage: "hold" as const,
         prog: (t - cycle[0]) / cycle[1],
       };
     return {
-      label: "Izdah (8)",
+      label: "Izdah (5)",
       stage: "out" as const,
       prog: (t - cycle[0] - cycle[1]) / cycle[2],
     };
@@ -81,7 +82,7 @@ export default function LandingTrustExercise({ onStart }: Props) {
 
   useEffect(() => {
     // pick a tip bucket based on value
-    const bucket = value <= 3 ? "low" : value <= 7 ? "mid" : "high";
+    const bucket = value <= 2 ? "low" : value <= 3 ? "mid" : "high";
     const arr = tips[bucket];
     setChosenTip(arr[Math.floor(Math.random() * arr.length)]);
   }, [value]);
@@ -111,13 +112,13 @@ export default function LandingTrustExercise({ onStart }: Props) {
               className="text-lg font-light"
               style={{ color: "var(--text-primary)" }}
             >
-              Siguran početak
+               Safe start
             </h2>
             <p
               className="text-xs font-light"
               style={{ color: "var(--text-secondary)" }}
             >
-              2–3 minute da dođeš sebi, bez registracije.
+              2–3 minutes to ground yourself, no registration needed.
             </p>
           </div>
         </div>
@@ -125,8 +126,7 @@ export default function LandingTrustExercise({ onStart }: Props) {
           className="hidden sm:flex items-center gap-2 text-xs font-light"
           style={{ color: "var(--text-secondary)" }}
         >
-          <Shield className="w-4 h-4" />
-          <span>Bez praćenja. Ništa se ne čuva.</span>
+         
         </div>
       </div>
 
@@ -139,13 +139,13 @@ export default function LandingTrustExercise({ onStart }: Props) {
               className="text-base font-light mb-2"
               style={{ color: "var(--text-primary)" }}
             >
-              Vježba disanja 4‑7‑8
+               2-3-5 Breathing Exercise
             </h3>
             <p
               className="text-sm font-light mb-4"
               style={{ color: "var(--text-secondary)" }}
             >
-              Dva ciklusa. Prati krug: udah 4s, zadrži 7s, izdah 8s.
+              Two cycles. Follow the circle: breathe in 2s, hold 3s, breathe out 5s.
             </p>
             <p
               className="inline-flex items-center gap-2 text-xs px-3 py-2 rounded-xl font-light"
@@ -154,7 +154,11 @@ export default function LandingTrustExercise({ onStart }: Props) {
                 color: "var(--text-secondary)",
               }}
             >
+<<<<<<< HEAD
               <HelpCircle className="w-4 h-4" /> Ako želiš, možeš preskočiti vježbe disanja.
+=======
+              <HelpCircle className="w-4 h-4" /> You can skip this step if you want.
+>>>>>>> 703fd95 (Ispravi na engleski uvodni dio)
             </p>
             <div className="mt-5 flex gap-3">
               <button
@@ -166,6 +170,7 @@ export default function LandingTrustExercise({ onStart }: Props) {
                   boxShadow: "var(--shadow-xs)"
                 }}
               >
+<<<<<<< HEAD
                 Preskoči 
               </button>
               <button
@@ -178,6 +183,9 @@ export default function LandingTrustExercise({ onStart }: Props) {
                 }}
               >
                 Preskoči Skroz
+=======
+                Skip
+>>>>>>> 703fd95 (Ispravi na engleski uvodni dio)
               </button>
             </div>
           </div>
@@ -193,12 +201,7 @@ export default function LandingTrustExercise({ onStart }: Props) {
             >
               Coffee or tea?
             </h3>
-            <p
-              className="text-sm font-light mb-4"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              Odaberite napitak — slike su iz public mape.
-            </p>
+            
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -209,8 +212,8 @@ export default function LandingTrustExercise({ onStart }: Props) {
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") setPhase("miniGame");
               }}
-              className="rounded-2xl overflow-hidden border cursor-pointer"
-              style={{ backgroundColor: "var(--card)", borderColor: "var(--muted)" }}
+              className="rounded-2xl overflow-hidden cursor-pointer transform transition-transform duration-200 ease-out hover:-translate-y-2"
+              style={{ backgroundColor: "var(--card)" }}
             >
               <ImageWithFallback src="/src/public/coffe.jpg" alt="Kafa" className="w-full h-44 object-cover" />
               <div className="p-4">
@@ -229,8 +232,8 @@ export default function LandingTrustExercise({ onStart }: Props) {
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") setPhase("miniGame");
               }}
-              className="rounded-2xl overflow-hidden border cursor-pointer"
-              style={{ backgroundColor: "var(--card)", borderColor: "var(--muted)" }}
+              className="rounded-2xl overflow-hidden cursor-pointer transform transition-transform duration-200 ease-out hover:-translate-y-2"
+              style={{ backgroundColor: "var(--card)" }}
             >
               <ImageWithFallback src="/src/public/tea2.jpg" alt="Čaj" className="w-full h-44 object-cover" />
               <div className="p-4">
@@ -263,13 +266,13 @@ export default function LandingTrustExercise({ onStart }: Props) {
             className="text-base font-light"
             style={{ color: "var(--text-primary)" }}
           >
-            Lijepo! Danas si već uradio/la nešto dobro za sebe.
+            Nice! You’ve already done something good for yourself today.
           </h3>
           <p
             className="text-sm font-light"
             style={{ color: "var(--text-secondary)" }}
           >
-            Ako želiš, možeš odmah nastaviti u vođenu sesiju.
+            You can continue with the conversation.
           </p>
           <div className="flex items-center justify-center gap-3">
             <button
@@ -280,14 +283,14 @@ export default function LandingTrustExercise({ onStart }: Props) {
                 boxShadow: "var(--shadow-sm)",
               }}
             >
-              Započni besplatnu sesiju
+             Start free
             </button>
           </div>
           <p
             className="text-[11px] font-light"
             style={{ color: "var(--text-muted)" }}
           >
-            Ne čuvamo tvoje odgovore. Možeš nastaviti anonimno.
+            We don’t store your answers. You can continue anonymously.
           </p>
         </section>
       )}
@@ -302,7 +305,7 @@ function BreathCircle({
   state: "in" | "hold" | "out";
   prog: number;
 }) {
-  const label = state === "in" ? "Udah" : state === "hold" ? "Zadrži" : "Izdah";
+  const label = state === "in" ? "Breathe in" : state === "hold" ? "Hold" : "Breathe out";
   const aria = `${label} – ${Math.round(prog * 100)}%`;
 
   // Therapeutic colors for breathing states
