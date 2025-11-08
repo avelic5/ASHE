@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import LandingTrustExercise from "./components/LandingTrustExercise";
 import { MainOffice } from "./components/MainOffice";
 import { ProblemSelection } from "./components/ProblemSelection";
 import { QuestionFlow } from "./components/QuestionFlow";
@@ -10,6 +11,7 @@ import { BookingFlow } from "./components/BookingFlow";
 import { Dashboard } from "./components/Dashboard";
 
 type Screen =
+  | "landing"
   | "main-office"
   | "problem-selection"
   | "question-flow"
@@ -22,10 +24,16 @@ type Screen =
 type ActivityType = "problem-cards" | "self-esteem" | "well-being";
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState<Screen>("main-office");
-  const [currentActivity, setCurrentActivity] = useState<ActivityType | null>(null);
+  const [currentScreen, setCurrentScreen] = useState<Screen>("landing");
+  const [currentActivity, setCurrentActivity] = useState<ActivityType | null>(
+    null
+  );
   const [selectedProblem, setSelectedProblem] = useState<string>("");
   const [activityAnswers, setActivityAnswers] = useState<string[]>([]);
+
+  const handleLandingComplete = () => {
+    setCurrentScreen("main-office");
+  };
 
   const handleActivitySelect = (activityId: string) => {
     if (activityId === "problem-cards") {
@@ -85,7 +93,16 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div
+      className="min-h-screen"
+      style={{ backgroundColor: "var(--bg-primary)" }}
+    >
+      {currentScreen === "landing" && (
+        <div className="min-h-screen flex items-center justify-center px-4">
+          <LandingTrustExercise onStart={handleLandingComplete} />
+        </div>
+      )}
+
       {currentScreen === "main-office" && (
         <MainOffice onActivitySelect={handleActivitySelect} />
       )}
