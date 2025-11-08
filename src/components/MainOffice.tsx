@@ -367,7 +367,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
         {notesOpen && (
           <motion.div
             layoutId="session-avatar"
-            className="fixed left-8 z-40 w-24 h-24 rounded-full overflow-hidden shadow-xl border-4 border-white"
+            className="fixed left-8 z-40 w-24 h-24 rounded-full overflow-hidden "
             style={{ top: "140px" }}
           >
             <img
@@ -478,7 +478,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
                     color={activity.color}
                     onClick={() => onActivitySelect(activity.id)}
                   />
-                </motion.div>
+                  </motion.div>
               ))}
             </div>
           </div>
