@@ -445,7 +445,7 @@ export function Dashboard({ onBackToHome, bookingDetails }: DashboardProps) {
                 className="text-base font-normal mb-2"
                 style={{ color: "var(--text-primary)" }}
               >
-                Talking Points from Last Session
+                Talking Points
               </h3>
               <p
                 className="text-xs font-light mb-5"

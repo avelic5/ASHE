@@ -6,6 +6,7 @@ import { IoSend } from "react-icons/io5";
 import AmongUS from "./AmonUS";
 import { User, Users } from "lucide-react"; // Dodaj ikonice
 
+
 import {
   Sun,
   Heart,
@@ -208,17 +209,21 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
           className="flex items-center gap-3"
         >
           <div
-            className="w-12 h-12 rounded-2xl flex items-center justify-center"
+            className="w-18 h-18 rounded-2xl flex items-center justify-center overflow-hidden"
             style={{ backgroundColor: "var(--color-lavender)" }}
           >
-            <Sparkles className="w-6 h-6 text-white" />
+            <img
+              src="../src/public/ashe.png"
+              alt="ASHE"
+              className="w-50 h-50 object-contain"
+            />
           </div>
           <div>
             <h1
               className="text-xl font-light"
               style={{ color: "var(--text-primary)" }}
             >
-              First Session
+              Introduction To Self Help
             </h1>
             <p
               className="text-xs font-light"
