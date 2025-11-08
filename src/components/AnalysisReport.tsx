@@ -430,7 +430,7 @@ export function AnalysisReport({
                     className="text-sm font-light"
                     style={{ color: "var(--text-primary)" }}
                   >
-                    Key Words You Used
+                    Answeras You Used
                   </h3>
                 </div>
                 <div className="flex flex-wrap gap-2">

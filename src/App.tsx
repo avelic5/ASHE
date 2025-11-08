@@ -24,6 +24,14 @@ type Screen =
 
 type ActivityType = "problem-cards" | "self-esteem" | "well-being";
 
+<<<<<<< HEAD
+=======
+interface BookingDetails {
+  sessionType: "in-person" | "online";
+  date: Date;
+  time: string;
+}
+>>>>>>> 4e2766ad2718ff8f598070303165989dc73b2c67
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("landing");
@@ -32,6 +40,9 @@ export default function App() {
   );
   const [selectedProblem, setSelectedProblem] = useState<string>("");
   const [activityAnswers, setActivityAnswers] = useState<string[]>([]);
+  const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(
+    null
+  );
 
   const handleLandingComplete = () => {
     setCurrentScreen("main-office");
@@ -83,7 +94,8 @@ export default function App() {
     setActivityAnswers([]);
   };
 
-  const handleBookingComplete = () => {
+  const handleBookingComplete = (details: BookingDetails) => {
+    setBookingDetails(details);
     setCurrentScreen("dashboard");
   };
 
@@ -167,7 +179,10 @@ export default function App() {
       )}
 
       {currentScreen === "dashboard" && (
-        <Dashboard onBackToHome={handleBackToOffice} />
+        <Dashboard
+          onBackToHome={handleBackToOffice}
+          bookingDetails={bookingDetails}
+        />
       )}
     </div>
   );

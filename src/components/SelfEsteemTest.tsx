@@ -89,9 +89,9 @@ export function SelfEsteemTest({ onComplete, onBack }: SelfEsteemTestProps) {
         {/* Home Button */}
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white hover:bg-gray-50 transition-colors shadow-sm"
+          className="flex cursor-pointer items-center gap-1.5 px-3 py-2 rounded-lg bg-white hover:bg-gray-50 transition-colors shadow-sm"
         >
-          <Home className="w-4 h-4 text-gray-600" />
+          <Home className="w-4 h-4 text-gray-600 " />
           <span className="text-xs text-gray-600 font-medium">Home</span>
         </button>
 

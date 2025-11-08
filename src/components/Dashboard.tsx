@@ -19,20 +19,40 @@ import {
 } from "lucide-react";
 import { ConfettiEffect } from "./ConfettiEffect";
 
-interface DashboardProps {
-  onBackToHome: () => void;
+interface BookingDetails {
+  sessionType: "in-person" | "online";
+  date: Date;
+  time: string;
 }
 
-export function Dashboard({ onBackToHome }: DashboardProps) {
+interface DashboardProps {
+  onBackToHome: () => void;
+  bookingDetails: BookingDetails | null;
+}
+
+export function Dashboard({ onBackToHome, bookingDetails }: DashboardProps) {
   const [completedItems, setCompletedItems] = useState<number[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [sectionCompleted, setSectionCompleted] = useState(false);
 
-  const upcomingSession = {
-    date: "November 14, 2025",
-    time: "2:00 PM",
-    type: "online",
-    psychologist: "Dr. Sarah Chen",
-  };
+  // Use booking details if available, otherwise use default
+  const upcomingSession = bookingDetails
+    ? {
+        date: bookingDetails.date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+        time: bookingDetails.time,
+        type: bookingDetails.sessionType,
+        psychologist: "Dr. Sarah Chen",
+      }
+    : {
+        date: "November 14, 2025",
+        time: "2:00 PM",
+        type: "online" as const,
+        psychologist: "Dr. Sarah Chen",
+      };
 
   const talkingPoints = [
     "Explored feelings about anxiety and stress management",
@@ -65,12 +85,26 @@ export function Dashboard({ onBackToHome }: DashboardProps) {
   const handleToggleItem = (index: number) => {
     if (completedItems.includes(index)) {
       setCompletedItems(completedItems.filter((i) => i !== index));
+      setSectionCompleted(false);
     } else {
-      setCompletedItems([...completedItems, index]);
+      const newCompletedItems = [...completedItems, index];
+      setCompletedItems(newCompletedItems);
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 1500);
     }
   };
+
+  const handleCompleteSection = () => {
+    if (completedItems.length === quickSolutions.length) {
+      setShowConfetti(true);
+      setTimeout(() => {
+        setShowConfetti(false);
+        setSectionCompleted(true);
+      }, 2000);
+    }
+  };
+
+  const allTasksCompleted = completedItems.length === quickSolutions.length;
 
   const progressValue = 33; // First session simulation done
 
@@ -90,11 +124,11 @@ export function Dashboard({ onBackToHome }: DashboardProps) {
         >
           <button
             onClick={onBackToHome}
-            className="flex items-center gap-2 transition-colors mb-6 font-light"
+            className="flex items-center gap-2 transition-colors mb-6 font-light "
             style={{ color: "var(--text-secondary)" }}
           >
-            <Home className="w-4 h-4" />
-            <span className="text-sm">Back to Office</span>
+            <Home className="w-4 h-4 " />
+            <span className="text-sm cursor-pointer">Back to Office</span>
           </button>
 
           <div className="flex items-center justify-between flex-wrap gap-4">
@@ -473,69 +507,106 @@ export function Dashboard({ onBackToHome }: DashboardProps) {
                 Daily practices recommended by your therapist
               </p>
 
-              <div className="space-y-3">
-                {quickSolutions.map((solution, index) => {
-                  const Icon = solution.icon;
-                  const isCompleted = completedItems.includes(index);
+              {!sectionCompleted ? (
+                <>
+                  <div className="space-y-3">
+                    {quickSolutions.map((solution, index) => {
+                      const Icon = solution.icon;
+                      const isCompleted = completedItems.includes(index);
 
-                  return (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 + index * 0.1 }}
-                      whileHover={{ y: -2 }}
-                      className="p-4 rounded-2xl border-0 transition-all cursor-pointer"
-                      style={{
-                        backgroundColor: isCompleted
-                          ? "var(--color-mint)"
-                          : "var(--bg-hover)",
-                        boxShadow: "var(--shadow-xs)",
-                      }}
-                      onClick={() => handleToggleItem(index)}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div
-                          className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                          style={{ backgroundColor: solution.color }}
+                      return (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.3 + index * 0.1 }}
+                          whileHover={{ y: -2 }}
+                          className="p-4 rounded-2xl border-0 transition-all cursor-pointer"
+                          style={{
+                            backgroundColor: isCompleted
+                              ? "var(--color-mint)"
+                              : "var(--bg-hover)",
+                            boxShadow: "var(--shadow-xs)",
+                          }}
+                          onClick={() => handleToggleItem(index)}
                         >
-                          <Icon className="w-5 h-5 text-white" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-start justify-between gap-2 mb-1">
-                            <p
-                              className="text-sm font-normal"
-                              style={{ color: "var(--text-primary)" }}
+                          <div className="flex items-start gap-3">
+                            <div
+                              className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                              style={{ backgroundColor: solution.color }}
                             >
-                              {solution.title}
-                            </p>
-                            <Checkbox
-                              checked={isCompleted}
-                              onCheckedChange={() => handleToggleItem(index)}
-                              className="mt-0.5"
-                            />
+                              <Icon className="w-5 h-5 text-white" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-start justify-between gap-2 mb-1">
+                                <p
+                                  className="text-sm font-normal"
+                                  style={{ color: "var(--text-primary)" }}
+                                >
+                                  {solution.title}
+                                </p>
+                                <Checkbox
+                                  checked={isCompleted}
+                                  onCheckedChange={() =>
+                                    handleToggleItem(index)
+                                  }
+                                  className="mt-0.5"
+                                />
+                              </div>
+                              <p
+                                className="text-xs font-light"
+                                style={{ color: "var(--text-secondary)" }}
+                              >
+                                {solution.description}
+                              </p>
+                            </div>
                           </div>
-                          <p
-                            className="text-xs font-light"
-                            style={{ color: "var(--text-secondary)" }}
-                          >
-                            {solution.description}
-                          </p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
 
-              <div
-                className="mt-5 p-3 rounded-2xl text-center"
-                style={{ backgroundColor: "var(--color-lavender)" }}
-              >
-                <p className="text-xs font-light text-white">
-                  ✨ Complete tasks to earn small wins
-                </p>
-              </div>
+                  <motion.button
+                    onClick={handleCompleteSection}
+                    disabled={!allTasksCompleted}
+                    whileHover={allTasksCompleted ? { scale: 1.02 } : {}}
+                    whileTap={allTasksCompleted ? { scale: 0.98 } : {}}
+                    className={`mt-5 p-3 rounded-2xl text-center w-full transition-all ${
+                      allTasksCompleted
+                        ? "cursor-pointer"
+                        : "cursor-not-allowed opacity-50"
+                    }`}
+                    style={{ backgroundColor: "var(--color-lavender)" }}
+                  >
+                    <p className="text-xs font-light text-white">
+                      ✨ Complete tasks to earn small wins
+                    </p>
+                  </motion.button>
+                </>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 25,
+                  }}
+                  className="p-6 rounded-2xl text-center"
+                  style={{
+                    backgroundColor: "var(--color-sage)",
+                    boxShadow: "var(--shadow-md)",
+                  }}
+                >
+                  <Sparkles className="w-6 h-6 mx-auto mb-2 text-white" />
+                  <p className="text-sm font-normal text-white mb-1">
+                    All Tasks Completed! 🎉
+                  </p>
+                  <p className="text-xs font-light text-white opacity-90">
+                    Great job on your daily wellness practices!
+                  </p>
+                </motion.div>
+              )}
             </Card>
           </motion.div>
         </div>
