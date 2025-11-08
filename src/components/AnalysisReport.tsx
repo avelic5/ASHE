@@ -12,6 +12,7 @@ import {
   Download,
 } from "lucide-react";
 import data from '../questionsDB/q&a.json';
+import { getCustomQuestions } from '../utils/generateQuestions';
 
 interface AnalysisReportProps {
   problem?: string;
@@ -41,12 +42,28 @@ export function AnalysisReport({
   };
   const keyThemes = answers.slice(0, 5);
 
-  // ensure the dynamic key is one of the known test keys so TS can index safely
-  const testKey = (problem?.toLowerCase() || "anxiety") as keyof typeof data.tests;
+  // Check if this is a custom problem (not in predefined list)
+  const isCustomProblem = problem && 
+    problem.toLowerCase() !== "anxiety" && 
+    problem.toLowerCase() !== "depression" && 
+    problem.toLowerCase() !== "adhd";
+
+  // Get questions - either from predefined data or custom questions
+  const getQuestions = () => {
+    if (isCustomProblem && problem) {
+      const customQuestions = getCustomQuestions(problem);
+      return customQuestions || [];
+    } else {
+      const testKey = (problem?.toLowerCase() || "anxiety") as keyof typeof data.tests;
+      return data.tests[testKey] || [];
+    }
+  };
+
+  const questions = getQuestions();
 
   // helper to safely get fields from the questions array
   const getAnswerField = (index: number, field: "description" | "suggestion") => {
-    const question = data.tests[testKey]?.[index];
+    const question = questions[index];
     if (!question) return undefined;
     const found = question.answers.find((answer) => answer.answer === keyThemes[index]);
     return found ? found[field] : undefined;
@@ -58,7 +75,7 @@ export function AnalysisReport({
     getAnswerField(2, "description"),
     getAnswerField(3, "description"),
     getAnswerField(4, "description"),
-  ];
+  ].filter((pattern): pattern is string => pattern !== undefined);
 
   const focusAreas = [
     getAnswerField(0, "suggestion"),
@@ -66,7 +83,7 @@ export function AnalysisReport({
     getAnswerField(2, "suggestion"),
     getAnswerField(3, "suggestion"),
     getAnswerField(4, "suggestion"),
-  ];
+  ].filter((area): area is string => area !== undefined);
 
   const talkingPoints = [
     /* `Explored feelings about ${problem || "personal growth"}`,

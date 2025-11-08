@@ -3,7 +3,8 @@ import { motion } from "motion/react";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { X, Heart, Brain, Zap, Plus } from "lucide-react";
+import { X, Heart, Brain, Zap, Plus, Loader2 } from "lucide-react";
+import { generateQuestionsFromText, storeCustomQuestions, getCustomQuestions } from "../utils/generateQuestions";
 
 interface ProblemSelectionProps {
   isOpen: boolean;
@@ -15,6 +16,8 @@ export function ProblemSelection({ isOpen, onClose, onSelect }: ProblemSelection
   const [selectedProblem, setSelectedProblem] = useState<string | null>(null);
   const [customIssue, setCustomIssue] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
@@ -24,9 +27,29 @@ export function ProblemSelection({ isOpen, onClose, onSelect }: ProblemSelection
     { id: "adhd", label: "ADHD", icon: Zap, color: "var(--pastel-mint)" },
   ];
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (selectedProblem === "custom" && customIssue.trim()) {
-      onSelect(customIssue);
+      // Check if questions already exist in localStorage
+      const existingQuestions = getCustomQuestions(customIssue);
+      
+      if (existingQuestions) {
+        // Use existing questions
+        onSelect(customIssue);
+      } else {
+        // Generate new questions
+        setIsGenerating(true);
+        setError(null);
+        
+        try {
+          const questions = await generateQuestionsFromText(customIssue);
+          storeCustomQuestions(customIssue, questions);
+          onSelect(customIssue);
+        } catch (err) {
+          console.error("Error generating questions:", err);
+          setError(err instanceof Error ? err.message : "Failed to generate questions. Please try again.");
+          setIsGenerating(false);
+        }
+      }
     } else if (selectedProblem) {
       const problem = problems.find((p) => p.id === selectedProblem);
       if (problem) onSelect(problem.label);
@@ -167,15 +190,35 @@ export function ProblemSelection({ isOpen, onClose, onSelect }: ProblemSelection
           )}
         </div>
 
+        {/* Error message */}
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-4 p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm"
+          >
+            {error}
+          </motion.div>
+        )}
+
         {/* Continue button */}
         <Button
           onClick={handleContinue}
           disabled={
-            !selectedProblem || (selectedProblem === "custom" && !customIssue.trim())
+            !selectedProblem || 
+            (selectedProblem === "custom" && !customIssue.trim()) ||
+            isGenerating
           }
           className="w-full h-12 rounded-2xl bg-primary hover:bg-primary/90 transition-all disabled:opacity-50"
         >
-          Continue
+          {isGenerating ? (
+            <div className="flex items-center gap-2">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Generating questions...</span>
+            </div>
+          ) : (
+            "Continue"
+          )}
         </Button>
       </motion.div>
     </motion.div>
