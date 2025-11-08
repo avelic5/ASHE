@@ -5,6 +5,7 @@ import { SmallWinModal } from "./SmallWinModal";
 import { ArrowLeft } from "lucide-react";
 import questionsData from "../questionsDB/q&a.json";
 import { getCustomQuestions } from "../utils/generateQuestions";
+import React from "react";
 
 interface QuestionFlowProps {
   problem: string;
