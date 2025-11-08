@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
-
 interface MainOfficeProps {
   onActivitySelect: (activity: string) => void;
 }
@@ -122,7 +121,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
           right: "auto",
         }}
       >
-        <div className="w-full rounded-2xl p-4 bg-white/60 backdrop-blur-xl shadow-2xl border-2 border-white/40 flex flex-col gap-3 will-change-transform">
+        <div className="w-full rounded-2xl p-4 bg-white backdrop-blur-lg shadow-2xl border-2 border-white/40 flex flex-col gap-3 will-change-transform">
           {/* Avatar removed from panel header */}
           <div className="flex items-start justify-between gap-2">
             <div>
@@ -135,7 +134,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
             </div>
             <button
               onClick={() => setNotesOpen(false)}
-              className="h-8 px-3 rounded-xl text-xs font-medium bg-white/90 hover:bg-white border border-border text-foreground shadow-sm hover:shadow transition-all"
+              className="h-10 px-6 rounded-xl text-sm font-extrabold bg-gradient-to-r from-rose-800 via-pink-800 to-fuchsia-800 text-black hover:from-rose-900 hover:via-pink-900 hover:to-fuchsia-900 border-2 border-gray-800 shadow-[0_4px_14px_0_rgba(0,0,0,0.4)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.5)] transition-all hover:scale-110 active:scale-95 cursor-pointer"
             >
               Hide
             </button>
@@ -144,19 +143,16 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Type your message..."
-            className="min-h-24 max-h-40 rounded-xl p-3 text-sm bg-white/70 placeholder:text-muted-foreground text-foreground border-2 border-border/60 outline-none focus:ring-2 focus:ring-[var(--focus-outline)] focus:border-border resize-none shadow-sm"
+            className="min-h-24 max-h-40 rounded-xl p-3 text-sm bg-white/60 placeholder:text-muted-foreground text-foreground border-2 border-border/60 outline-none focus:ring-2 focus:ring-[var(--focus-outline)] focus:border-border resize-none shadow-md"
           />
-          <div className="flex items-center justify-end gap-2">
+          <div className="flex items-center justify-end gap-3">
             <button
               onClick={() => setNotes("")}
-              className="h-8 px-3 rounded-xl text-xs font-medium bg-white/70 hover:bg-white/90 border border-border text-foreground shadow-sm hover:shadow transition-all"
+              className="h-8 px-3 rounded-xl text-xs bg-transparent hover:bg-white/60 border border-border text-muted-foreground"
             >
               Clear
             </button>
-            <button
-              onClick={() => setNotesOpen(false)}
-              className="h-8 px-3 rounded-xl text-xs font-semibold bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 shadow-md hover:shadow-lg transition-all"
-            >
+            <button className="h-10 px-6 rounded-xl text-sm font-extrabold bg-gradient-to-r from-emerald-800 via-teal-800 to-cyan-800 text-black hover:from-emerald-900 hover:via-teal-900 hover:to-cyan-900 border-2 border-gray-800 shadow-[0_4px_14px_0_rgba(0,0,0,0.4)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.5)] transition-all hover:scale-110 active:scale-95 cursor-pointer">
               Done
             </button>
           </div>
@@ -176,10 +172,10 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
         {notesOpen && (
           <motion.div
             layoutId="session-avatar"
-            className="absolute top-0 left-10 z-50 w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-xl"
+            className="absolute top-0 left-10 z-30 w-30 h-20 rounded-full overflow-hidden border-4 border-white shadow-xl"
           >
-            <ImageWithFallback
-              src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=512&q=80"
+            <img
+              src="/src/public/Male1.png"
               alt="AI Agent"
               className="w-full h-full object-cover"
             />
@@ -192,14 +188,36 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
             layoutId="session-avatar"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             transition={{ delay: 0.15 }}
             onClick={() => setNotesOpen(true)}
-            className="mb-6 rounded-full focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--focus-outline)]"
+            className="relative mb-6 rounded-full focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--focus-outline)] cursor-pointer"
             aria-label="Open notes panel"
           >
-            <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-full overflow-hidden shadow-2xl border-4 border-white ring-4 ring-white/20">
-              <ImageWithFallback
-                src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=512&q=80"
+            {/* Glowing background effect */}
+            <motion.div
+              className="absolute inset-0 rounded-full"
+              animate={{
+                boxShadow: [
+                  "0 0 20px 10px rgba(139, 127, 184, 0.4)",
+                  "0 0 40px 20px rgba(139, 127, 184, 0.6)",
+                  "0 0 20px 10px rgba(139, 127, 184, 0.4)",
+                ],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              style={{
+                background:
+                  "radial-gradient(circle, rgba(139, 127, 184, 0.3) 0%, transparent 70%)",
+              }}
+            />
+            <div className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full overflow-hidden shadow-2xl border-4 border-white ring-4 ring-white/20 transition-transform">
+              <img
+                src="/src/public/Male1.png"
                 alt="AI Agent"
                 className="w-full h-full object-cover"
               />
