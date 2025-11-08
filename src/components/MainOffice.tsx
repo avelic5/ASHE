@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { ActivityCard } from "./ActivityCard";
 import {
@@ -11,15 +11,105 @@ import {
   Sparkles,
 } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { chatWithAI } from "../utils/chatWithAI";
 
+type Message = {
+  id: number;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+};
 
 interface MainOfficeProps {
   onActivitySelect: (activity: string) => void;
 }
 
 export function MainOffice({ onActivitySelect }: MainOfficeProps) {
+  const [isAIOpen, setIsAIOpen] = useState<boolean>(false);
+  const [inputMessage, setInputMessage] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [userMessages, setUserMessages] = useState<Message[]>([]); // Korisničke poruke
+  const [aiMessages, setAIMessages] = useState<Message[]>([]); // AI poruke
+
+  // Funkcija za slanje poruke AI-u
+  const handleSendMessage = async () => {
+    if (!inputMessage.trim() || isLoading) return;
+
+    const userMessage: Message = {
+      id: Date.now(),
+      role: 'user',
+      content: inputMessage.trim(),
+      timestamp: new Date()
+    };
+
+    // Dodaj korisničku poruku u userMessages
+    setUserMessages(prev => [...prev, userMessage]);
+    setInputMessage('');
+    setIsLoading(true);
+
+    try {
+      // Pozovi AI funkciju
+      const aiResponse = await chatWithAI(inputMessage.trim());
+
+      const aiMessage: Message = {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: aiResponse,
+        timestamp: new Date()
+      };
+
+      // Dodaj AI odgovor u aiMessages
+      setAIMessages(prev => [...prev, aiMessage]);
+    } catch (error) {
+      console.error('Error communicating with AI:', error);
+
+      const errorMessage: Message = {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: 'Sorry, I encountered an error. Please try again.',
+        timestamp: new Date()
+      };
+
+      setAIMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  //////////////////////////////////////
+
+  useEffect(() => {
+    console.log("AI: ", aiMessages);
+
+    console.log("USER: ", userMessages);
+
+  }, [aiMessages, userMessages])
+
+  const getAllMessages = (): Message[] => {
+    const combined: Message[] = [];
+    const maxLength = Math.max(userMessages.length, aiMessages.length);
+
+    for (let i = 0; i < maxLength; i++) {
+      // Prvo dodaj korisničku poruku (ako postoji)
+      if (userMessages[i]) {
+        combined.push(userMessages[i]);
+      }
+      // Zatim dodaj AI odgovor (ako postoji)
+      if (aiMessages[i]) {
+        combined.push(aiMessages[i]);
+      }
+    }
+
+    return combined;
+  };
   const [notesOpen, setNotesOpen] = useState(false);
   const [notes, setNotes] = useState("");
+  let allMessages = getAllMessages();
+
+  const clearAllMessages = () => {
+    setUserMessages([]);
+    setAIMessages([]);
+    allMessages = [];
+  }
 
   const activities = [
     {
@@ -102,68 +192,123 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
         </motion.div>
       </nav>
 
-      
+
 
       {/* Chat panel – force bottom-left positioning */}
       <motion.aside
-        role="dialog"
-        aria-label="Notes"
-        aria-modal="false"
-        className="fixed z-50 w-full max-w-md"
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{
-          opacity: notesOpen ? 1 : 0,
-          scale: notesOpen ? 1 : 0.98,
-        }}
-        transition={{ type: "spring", stiffness: 260, damping: 22 }}
-        style={{
-          pointerEvents: notesOpen ? "auto" : "none",
-          left: 16,
-          bottom: 16,
-          top: "auto",
-          right: "auto",
-        }}
+  role="dialog"
+  aria-label="Notes"
+  aria-modal="false"
+  className="fixed z-50 w-full max-w-md"
+  initial={{ opacity: 0, scale: 0.98 }}
+  animate={{
+    opacity: notesOpen ? 1 : 0,
+    scale: notesOpen ? 1 : 0.98,
+  }}
+  transition={{ type: "spring", stiffness: 260, damping: 22 }}
+  style={{
+    pointerEvents: notesOpen ? "auto" : "none",
+    left: 16,
+    bottom: 16,
+    top: "auto",
+    right: "auto",
+  }}
+>
+  <div className="w-full rounded-2xl p-4 bg-white/60 backdrop-blur-xl shadow-2xl border-2 border-white/40 flex flex-col gap-3 will-change-transform">
+    {/* Header */}
+    <div className="flex items-start justify-between gap-2">
+      <div>
+        <h3 className="text-sm font-semibold text-foreground drop-shadow-sm">
+          Session notes
+        </h3>
+        <p className="text-xs text-muted-foreground">
+          Jot ideas here. AI assist coming soon.
+        </p>
+      </div>
+      <button
+        onClick={() => setNotesOpen(false)}
+        className="h-8 px-3 rounded-xl text-xs font-medium bg-white/90 hover:bg-white border border-border text-foreground shadow-sm hover:shadow transition-all"
       >
-        <div className="w-full rounded-2xl p-4 bg-white/60 backdrop-blur-xl shadow-2xl border-2 border-white/40 flex flex-col gap-3 will-change-transform">
-          {/* Avatar removed from panel header */}
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <h3 className="text-sm font-semibold text-foreground drop-shadow-sm">
-                Session notes
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                Jot ideas here. AI assist coming soon.
-              </p>
+        Hide
+      </button>
+    </div>
+
+    {/* Chat Messages Container - SCROLLABLE */}
+    <div className="flex-1 overflow-hidden flex flex-col min-h-0">
+      <div className="flex-1 overflow-y-auto max-h-60 min-h-40 rounded-xl bg-white/70 border-2 border-border/60">
+        <div className="p-3 space-y-3">
+          {allMessages.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-4">
+              Start a conversation with AI...
+            </p>
+          ) : (
+            allMessages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`max-w-[80%] rounded-lg p-3 text-sm flex flex-col ${
+                    message.role === 'user'
+                      ? 'bg-gray-100 text-blue-800'
+                      : 'bg-gray-100 text-gray-800'
+                  }`}
+                >
+                  <span className="font-bold text-xs mb-1">
+                    {message.role === 'user' ? "User:" : "Agent:"}
+                  </span>
+                  <p className="whitespace-pre-wrap">
+                    {message.content}
+                  </p>
+                </div>
+              </div>
+            ))
+          )}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="bg-gray-100 text-gray-800 rounded-lg p-3 text-sm max-w-[80%]">
+                <span className="font-bold text-xs mb-1">Agent:</span>
+                <p>Thinking...</p>
+              </div>
             </div>
-            <button
-              onClick={() => setNotesOpen(false)}
-              className="h-8 px-3 rounded-xl text-xs font-medium bg-white/90 hover:bg-white border border-border text-foreground shadow-sm hover:shadow transition-all"
-            >
-              Hide
-            </button>
-          </div>
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="Type your message..."
-            className="min-h-24 max-h-40 rounded-xl p-3 text-sm bg-white/70 placeholder:text-muted-foreground text-foreground border-2 border-border/60 outline-none focus:ring-2 focus:ring-[var(--focus-outline)] focus:border-border resize-none shadow-sm"
-          />
-          <div className="flex items-center justify-end gap-2">
-            <button
-              onClick={() => setNotes("")}
-              className="h-8 px-3 rounded-xl text-xs font-medium bg-white/70 hover:bg-white/90 border border-border text-foreground shadow-sm hover:shadow transition-all"
-            >
-              Clear
-            </button>
-            <button
-              onClick={() => setNotesOpen(false)}
-              className="h-8 px-3 rounded-xl text-xs font-semibold bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 shadow-md hover:shadow-lg transition-all"
-            >
-              Done
-            </button>
-          </div>
+          )}
         </div>
-      </motion.aside>
+      </div>
+    </div>
+
+    {/* Input Area */}
+    <textarea
+      value={inputMessage}
+      onChange={(e) => setInputMessage(e.target.value)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          handleSendMessage();
+        }
+      }}
+      disabled={isLoading}
+      placeholder="Type your message..."
+      className="min-h-24 max-h-40 rounded-xl p-3 text-sm bg-white/70 placeholder:text-muted-foreground text-foreground border-2 border-border/60 outline-none focus:ring-2 focus:ring-[var(--focus-outline)] focus:border-border resize-none shadow-sm"
+    />
+    <div className="flex items-center justify-end gap-2 cursor-pointer">
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          clearAllMessages();
+        }}
+        className="cursor-pointer h-8 px-3 rounded-xl text-xs font-medium bg-white/70 hover:bg-white/90 border border-border text-foreground shadow-sm hover:shadow transition-all"
+      >
+        Clear
+      </button>
+      <button
+        onClick={() => setNotesOpen(false)}
+        className="h-8 px-3 rounded-xl text-xs font-semibold bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 shadow-md hover:shadow-lg transition-all"
+      >
+        Done
+      </button>
+    </div>
+  </div>
+</motion.aside> 
 
       {/* Main content: kolona + raste preko min visine; centrira se kad je chat otvoren */}
       <motion.main
@@ -175,18 +320,18 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
                     ${notesOpen ? "justify-center" : "justify-start"}`}
       >
         {/* Avatar floats to top-left when panel opens */}
-      {notesOpen && (
-        <motion.div
-          layoutId="session-avatar"
-          className="absolute top-0 left-10 z-50 w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-xl"
-        >
-          <ImageWithFallback
-            src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=512&q=80"
-            alt="AI Agent"
-            className="w-full h-full object-cover"
-          />
-        </motion.div>
-      )}
+        {notesOpen && (
+          <motion.div
+            layoutId="session-avatar"
+            className="absolute top-0 left-10 z-50 w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-xl"
+          >
+            <ImageWithFallback
+              src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=512&q=80"
+              alt="AI Agent"
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
+        )}
         {/* Center avatar (moves into panel on click) */}
         {!notesOpen && (
           <motion.button
@@ -215,9 +360,8 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className={`text-center max-w-2xl w-full ${
-            notesOpen ? "mt-12" : "mt-16"
-          }`}
+          className={`text-center max-w-2xl w-full ${notesOpen ? "mt-12" : "mt-16"
+            }`}
         >
           <h2 className="mb-4 text-foreground">
             Welcome to Your First Session
