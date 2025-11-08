@@ -4,7 +4,7 @@ import { ActivityCard } from "./ActivityCard";
 import { FaTrash } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
 import AmongUS from "./AmonUS";
-import {logo} from "../public/ashe.png";
+
 
 import {
   Sun,
