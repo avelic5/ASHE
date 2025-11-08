@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Check, HelpCircle, Shield, Sparkles } from "lucide-react";
-
+import { QuestionCard } from "./QuestionCard";
 /**
  * LandingTrustExercise
  * A 2–3 minute, privacy-first micro‑exercise for your homepage to build trust before sign-up.
@@ -34,7 +34,7 @@ const tips: Record<string, string[]> = {
 };
 
 export default function LandingTrustExercise({ onStart }: Props) {
-  const [phase, setPhase] = useState<"breath" | "mood" | "step" | "done">(
+  const [phase, setPhase] = useState<"breath" |"cofeeTea"| "done">(
     "breath"
   );
   const [timer, setTimer] = useState(0);
@@ -52,7 +52,7 @@ export default function LandingTrustExercise({ onStart }: Props) {
     const id = setInterval(() => setTimer((t) => t + 1), 1000);
     const timeout = setTimeout(() => {
       clearInterval(id);
-      setPhase("mood");
+      setPhase("cofeeTea");
     }, (total * 2 + 4) * 1000); // ~2 ciklusa + buffer
     return () => {
       clearInterval(id);
@@ -156,12 +156,12 @@ export default function LandingTrustExercise({ onStart }: Props) {
             </p>
             <div className="mt-5 flex gap-3">
               <button
-                onClick={() => setPhase("mood")}
+                onClick={() => setPhase("cofeeTea")}
                 className="px-4 py-2 rounded-xl border-0 text-sm font-light cursor-pointer transition-all"
                 style={{
                   backgroundColor: "var(--bg-hover)",
                   color: "var(--text-primary)",
-                  boxShadow: "var(--shadow-xs)",
+                  boxShadow: "var(--shadow-xs)"
                 }}
               >
                 Preskoči
@@ -171,132 +171,22 @@ export default function LandingTrustExercise({ onStart }: Props) {
         </section>
       )}
 
-      {phase === "mood" && (
-        <section className="space-y-5">
+      {phase === "cofeeTea" && (
+        <section className="grid sm:grid-cols-[220px_1fr] gap-6 items-center">
           <div>
             <h3
               className="text-base font-light mb-2"
               style={{ color: "var(--text-primary)" }}
             >
-              Kako si danas na skali 0–10?
+              Coffee or tea?
             </h3>
-            <input
-              type="range"
-              min={0}
-              max={10}
-              value={value}
-              onChange={(e) => setValue(parseInt(e.target.value, 10))}
-              className="w-full"
-              style={{ accentColor: "var(--color-sage)" }}
-            />
-            <div
-              className="mt-2 flex justify-between text-xs font-light"
+            <p
+              className="text-sm font-light mb-4"
               style={{ color: "var(--text-secondary)" }}
             >
-              <span>0 — Teško mi je</span>
-              <span>10 — Osjećam se dobro</span>
-            </div>
-            <div className="mt-2 flex justify-center">
-              <span
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-white text-xs font-light"
-                style={{
-                  backgroundColor: "var(--color-sage)",
-                  boxShadow: "var(--shadow-sm)",
-                }}
-              >
-                Trenutno: <strong className="font-normal ml-1">{value}</strong>
-              </span>
-            </div>
-          </div>
-          <div
-            className="p-4 rounded-2xl border-0 text-sm"
-            style={{
-              backgroundColor: "var(--bg-hover)",
-              color: "var(--text-primary)",
-            }}
-          >
-            <p className="font-light mb-1">Brzi savjet</p>
-            <p className="font-light">{chosenTip}</p>
-          </div>
-          <div className="flex gap-3">
-            <button
-              onClick={() => setPhase("step")}
-              className="px-4 py-2 rounded-xl text-white text-sm font-light cursor-pointer transition-all"
-              style={{
-                backgroundColor: "var(--color-sage)",
-                boxShadow: "var(--shadow-sm)",
-              }}
-            >
-              Nastavi
-            </button>
-            <button
-              onClick={() => setPhase("breath")}
-              className="px-4 py-2 rounded-xl border-0 text-sm font-light cursor-pointer transition-all"
-              style={{
-                backgroundColor: "var(--bg-hover)",
-                color: "var(--text-primary)",
-                boxShadow: "var(--shadow-xs)",
-              }}
-            >
-              Nazad
-            </button>
-          </div>
-        </section>
-      )}
-
-      {phase === "step" && (
-        <section className="space-y-5">
-          <div>
-            <h3
-              className="text-base font-light mb-2"
-              style={{ color: "var(--text-primary)" }}
-            >
-              Jedan mali korak za danas
-            </h3>
-            <ul
-              className="space-y-2 text-sm font-light"
-              style={{ color: "var(--text-primary)" }}
-            >
-              {[
-                "Popit ću čašu vode sada",
-                "Napravit ću 5 minuta šetnje",
-                "Zapisat ću jednu misao bez filtera",
-              ].map((t) => (
-                <li key={t} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    onChange={(e) => setAck(e.currentTarget.checked)}
-                    className="rounded cursor-pointer"
-                    style={{ accentColor: "var(--color-sage)" }}
-                  />
-                  <span>{t}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              onClick={() => setPhase("done")}
-              disabled={!ack}
-              className="px-4 py-2 rounded-xl text-white text-sm font-light cursor-pointer transition-all disabled:opacity-40"
-              style={{
-                backgroundColor: "var(--color-mint)",
-                boxShadow: "var(--shadow-sm)",
-              }}
-            >
-              Potvrdi korak
-            </button>
-            <button
-              onClick={() => setPhase("mood")}
-              className="px-4 py-2 rounded-xl border-0 text-sm font-light cursor-pointer transition-all"
-              style={{
-                backgroundColor: "var(--bg-hover)",
-                color: "var(--text-primary)",
-                boxShadow: "var(--shadow-xs)",
-              }}
-            >
-              Nazad
-            </button>
+              Choose your beverage of choice.
+            </p>
+            <QuestionCard question="Coffee or tea?" answerOptions={[{ answer: "Coffee", description: "Coffee is a great way to start your day.", suggestion: "Coffee is a great way to start your day." }, { answer: "Tea", description: "Tea is a great way to relax.", suggestion: "Tea is a great way to relax." }]} currentCard={1} totalCards={2} onNext={() => setPhase("done")} />
           </div>
         </section>
       )}
