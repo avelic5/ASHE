@@ -160,7 +160,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
       />
 
       {/* Top Navigation */}
-      <nav className="relative z-10 flex items-center justify-between p-6">
+      <nav className="absolute top-1 left-1 z-10 flex items-center justify-between p-6">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -170,15 +170,13 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
             className="w-12 h-12 rounded-2xl flex items-center justify-center"
             style={{ backgroundColor: "var(--pastel-lavender)" }}
           >
-            <Sparkles className="w-6 h-6 text-white" />
+            <Sparkles className="w-6 h-6 text-black" />
           </div>
           <div>
             <h1 className="text-foreground">First Session</h1>
             <p className="text-xs text-muted-foreground">Your safe space</p>
           </div>
         </motion.div>
-
-        
       </nav>
 
       {/* Chat panel – force bottom-left positioning */}
@@ -201,103 +199,96 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
           right: "auto",
         }}
       >
-        <div>
-          <div className="flex-1 overflow-y-auto max-h-100 min-h-40 rounded-xl bg-white/70 ">
-              <div className="p-3 space-y-3">
-                {allMessages.length === 0
-                  ? null
-                  : allMessages.map((message) => (
-                      <div
-                        key={message.id}
-                        className={`flex ${
-                          message.role === "user"
-                            ? "justify-end"
-                            : "justify-start"
-                        }`}
-                      >
-                        <div
-                          className={`max-w-[80%] rounded-lg p-3 text-sm flex flex-col ${
-                            message.role === "user"
-                              ? "bg-gray-100 text-blue-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          <span className="font-bold text-xs mb-1">
-                            {message.role === "user" ? (<p className="font-bold">User: </p>) :
-                            (<p className="font-bold">Agent: </p>)}
-                          </span>
-                          <p className="whitespace-pre-wrap">
-                            {message.content}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                {isLoading && (
-                  <div className="flex justify-start">
-                    <div className="bg-gray-100 text-gray-800 rounded-lg p-3 text-sm max-w-[80%]">
-                      <span className="font-bold text-xs mb-1">Agent:</span>
-                      <p>Thinking...</p>
-                    </div>
+        <div className="overflow-y-auto rounded-2xl bg-white/80 backdrop-blur-sm ro space-y-3">
+          {allMessages.length === 0
+            ? null
+            : allMessages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex ${
+                    message.role === "user" ? "justify-end" : "justify-start"
+                  }`}
+                >
+                  <div
+                    className={`max-w-[80%] rounded-2xl p-3 text-sm ${
+                      message.role === "user"
+                        ? "bg-gradient-to-br from-purple-100 to-purple-50 text-gray-800 shadow-sm"
+                        : "bg-gradient-to-br from-gray-50 to-white text-gray-800 shadow-sm border border-gray-100"
+                    }`}
+                  >
+                    <p className="font-semibold text-xs mb-1.5 opacity-70">
+                      {message.role === "user" ? "You" : "AI Agent"}
+                    </p>
+                    <p className="whitespace-pre-wrap leading-relaxed">
+                      {message.content}
+                    </p>
                   </div>
-                )}
+                </div>
+              ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="bg-gradient-to-br from-gray-50 to-white text-gray-800 rounded-2xl p-3 text-sm max-w-[80%] shadow-sm border border-gray-100">
+                <p className="font-semibold text-xs mb-1.5 opacity-70">
+                  AI Agent
+                </p>
+                <p className="animate-pulse">Thinking...</p>
               </div>
             </div>
+          )}
         </div>
-        <div className="w-full rounded-2xl p-4 bg-gray-100  border-2 border-white/40 flex flex-col gap-3 will-change-transform">
+        <div className="w-full rounded-2xl p-4 bg-white/90 backdrop-blur-md border-t border-gray-200/50 flex flex-col gap-3 will-change-transform">
           {/* Header */}
-          
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <h3 className="text-sm font-semibold text-foreground drop-shadow-sm">
-                Session notes
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                Jot ideas here. AI assist coming soon.
-              </p>
-            </div>
+
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <h3 className="text-sm font-semibold text-gray-700">
+              Chat with AI
+            </h3>
             <button
               onClick={() => setNotesOpen(false)}
-              className="h-10 px-6 rounded-xl text-sm font-extrabold bg-gradient-to-r from-rose-800 via-pink-800 to-fuchsia-800 text-black hover:from-rose-900 hover:via-pink-900 hover:to-fuchsia-900 border-2 border-gray-800 shadow-[0_4px_14px_0_rgba(0,0,0,0.4)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.5)] transition-all hover:scale-110 active:scale-95 cursor-pointer"
+              className="mr-2 h-8 px-4 rounded-lg text-xs font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors"
             >
-              Hide Chat
+              ✕
             </button>
           </div>
 
           {/* Chat Messages Container - SCROLLABLE */}
           <div className="flex-1 overflow-hidden flex flex-col min-h-0">
-            
-
             {/* Input Area */}
-            <textarea
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSendMessage();
-                }
-              }}
-              disabled={isLoading}
-              placeholder="Type your message..."
-              className="min-h-24 max-h-40 rounded-xl p-3 text-sm bg-white/70 placeholder:text-muted-foreground text-foreground border-2 border-border/60 outline-none focus:ring-2 focus:ring-[var(--focus-outline)] focus:border-border resize-none shadow-sm"
-            />
-            <div className="flex items-center justify-end gap-3 mt-2">
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  clearAllMessages();
+            <div className="flex items-center gap-2 bg-white/60 rounded-xl p-2 border border-gray-200/50">
+              <textarea
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
                 }}
-                className="h-10 px-6 rounded-xl text-sm font-extrabold bg-gradient-to-r from-emerald-800 via-teal-800 to-cyan-800 text-black hover:from-emerald-900 hover:via-teal-900 hover:to-cyan-900 border-2 border-gray-800 shadow-[0_4px_14px_0_rgba(0,0,0,0.4)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.5)] transition-all hover:scale-110 active:scale-95 cursor-pointer">
-                <FaTrash />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleSendMessage()}}
-                className="h-10 px-6 rounded-xl text-sm font-extrabold bg-gradient-to-r from-emerald-800 via-teal-800 to-cyan-800 text-black hover:from-emerald-900 hover:via-teal-900 hover:to-cyan-900 border-2 border-gray-800 shadow-[0_4px_14px_0_rgba(0,0,0,0.4)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.5)] transition-all hover:scale-110 active:scale-95 cursor-pointer"
-              >
-                <IoSend />
-              </button>
+                disabled={isLoading}
+                placeholder="Share your thoughts..."
+                className="flex-1 min-h-[60px] max-h-24 bg-transparent placeholder:text-gray-400 text-gray-800 text-sm outline-none resize-none"
+              />
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }}
+                  disabled={!inputMessage.trim() || isLoading}
+                  className="h-9 w-9 rounded-lg bg-gradient-to-br from-purple-400 to-purple-500 text-white hover:from-purple-500 hover:to-purple-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-all shadow-sm"
+                >
+                  <IoSend className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    clearAllMessages();
+                  }}
+                  className="h-9 w-9 rounded-lg bg-gray-200 text-gray-600 hover:bg-gray-300 flex items-center justify-center transition-colors"
+                >
+                  <FaTrash className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -316,7 +307,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
         {notesOpen && (
           <motion.div
             layoutId="session-avatar"
-            className="absolute top-0 left-10 z-30 w-30 h-20 rounded-full overflow-hidden border-4 border-white shadow-xl"
+            className="absolute top-20 left-[-100px] z-30 w-30 h-30 rounded-full overflow-hidden  border-white "
           >
             <img
               src="/src/public/Male1.png"
@@ -336,12 +327,12 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
             whileTap={{ scale: 0.95 }}
             transition={{ delay: 0.15 }}
             onClick={() => setNotesOpen(true)}
-            className="relative mb-6 rounded-full focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--focus-outline)] cursor-pointer"
+            className="relative mt-20 mb-6 rounded-full focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--focus-outline)] cursor-pointer"
             aria-label="Open notes panel"
           >
             {/* Glowing background effect */}
             <motion.div
-              className="absolute inset-0 rounded-full"
+              className="absolute inset-0 rounded-full "
               animate={{
                 boxShadow: [
                   "0 0 20px 10px rgba(139, 127, 184, 0.4)",
@@ -359,7 +350,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
                   "radial-gradient(circle, rgba(139, 127, 184, 0.3) 0%, transparent 70%)",
               }}
             />
-            <div className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full overflow-hidden shadow-2xl border-4 border-white ring-4 ring-white/20 transition-transform">
+            <div className="relative w-35 h-35 sm:w-35 sm:h-35 rounded-full overflow-hidden shadow-2xl  ring-white/20 transition-transform">
               <img
                 src="/src/public/Male1.png"
                 alt="AI Agent"
@@ -376,7 +367,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className={`text-center max-w-2xl w-full ${
-            notesOpen ? "mt-12" : "mt-16"
+            notesOpen ? "mt-0" : "mt-0"
           }`}
         >
           <h2 className="mb-4 text-foreground">
@@ -394,24 +385,18 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
-          className={`w-full ${notesOpen ? "mt-8" : "mt-10"} mb-8`}
+          className={`w-full ${notesOpen ? "mt-0" : "mt-0"} mb-3`}
         >
           <div className="relative">
             <div
               aria-hidden
               className="absolute -inset-6 sm:-inset-8 rounded-[2rem] sm:rounded-[3rem]"
-              style={{
-                background:
-                  "linear-gradient(145deg,var(--pastel-cream), var(--pastel-peach) 120%)",
-                boxShadow: "0 24px 70px rgba(139, 127, 184, 0.25)",
-                opacity: 0.85,
-                filter: "blur(2px)",
-              }}
+              
             />
             <div
               className="relative flex flex-col /* mobile-first: kolona */
                                 sm:flex-row sm:flex-wrap /* od sm: wrap */
-                                gap-5 sm:gap-8 justify-center p-6 sm:p-10"
+                                gap-3 sm:gap-8 justify-center p-6 sm:p-10"
             >
               {activities.map((activity, index) => (
                 <motion.div
@@ -419,7 +404,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.35 + index * 0.08 }}
-                  className="p-3 sm:p-4"
+                  
                 >
                   <ActivityCard
                     title={activity.title}
@@ -438,7 +423,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="text-xs text-muted-foreground text-center mb-10"
+          className="text-s text-muted-foreground text-center mb-8"
         >
           Click any card to begin your personalized session
         </motion.p>
