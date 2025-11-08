@@ -202,7 +202,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
         }}
       >
         <div>
-          <div className="flex-1 overflow-y-auto max-h-60 min-h-40 rounded-xl bg-white/70 ">
+          <div className="flex-1 overflow-y-auto max-h-100 min-h-40 rounded-xl bg-white/70 ">
               <div className="p-3 space-y-3">
                 {allMessages.length === 0
                   ? null
