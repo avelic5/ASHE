@@ -157,7 +157,7 @@ export default function LandingTrustExercise({ onStart }: Props) {
             </p>
             <div className="mt-5 flex gap-3">
               <button
-                onClick={() => setPhase("cofeeTea")}
+                onClick={() => setPhase("done")} /*Change later to phase coffeeTea*/
                 className="px-4 py-2 rounded-xl border-0 text-sm font-light cursor-pointer transition-all"
                 style={{
                   backgroundColor: "var(--bg-hover)",

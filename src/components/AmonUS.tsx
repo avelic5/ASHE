@@ -135,42 +135,52 @@ export default function AmongUS({ onComplete }: { onComplete: () => void }) {
   }, []);
 
   return (
+    <div className="MinigameContainer"
+    style={{
+      width: '100%',
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center',
+      
+
+    }}>
     <div style={{ 
       margin: 0, 
-      display: 'grid', 
-      placeItems: 'center', 
+      
       background: 'black', 
-      height: '907px',
-      width: '907px',
+      height: '60vh',
+      width: '60vh',
       overflow: 'hidden' 
+
     }}>
       <svg 
-      width="907" 
-      height="907" 
+      width="100%" 
+      height="100%" 
       viewBox="0 0 907 907"
     >
       <linearGradient id="a" y1="453.5" x2="907" y2="453.5" gradientUnits="userSpaceOnUse">
-        <stop offset="0" stopColor="#1d1d1b" />
-        <stop offset="0" stopColor="#272726" />
-        <stop offset=".2" stopColor="#262625" stopOpacity=".93" />
-        <stop offset=".35" stopColor="#232322" stopOpacity=".69" />
-        <stop offset=".48" stopColor="#1e1e1c" stopOpacity=".29" />
-        <stop offset=".51" stopColor="#1d1d1b" stopOpacity=".2" />
-        <stop offset="1" stopColor="#1d1d1b" />
+        {/* Adjusted stopColor for a lighter background */}
+        <stop offset="0" stopColor="#a0a09e" /> 
+        <stop offset="0" stopColor="#b0b0af" />
+        <stop offset=".2" stopColor="#b5b5b4" stopOpacity=".93" />
+        <stop offset=".35" stopColor="#bcbcbb" stopOpacity=".69" />
+        <stop offset=".48" stopColor="#c5c5c4" stopOpacity=".29" />
+        <stop offset=".51" stopColor="#c7c7c6" stopOpacity=".2" />
+        <stop offset="1" stopColor="#c0c0bf" />
       </linearGradient>
       <linearGradient id="b" x1="35" y1="-2.43" x2="35" y2="890.57" gradientUnits="userSpaceOnUse">
-        <stop offset=".77" stopColor="#393e42" />
-        <stop offset=".83" stopColor="#35393d" />
-        <stop offset=".9" stopColor="#292c2e" />
-        <stop offset=".98" stopColor="#151616" />
-        <stop offset="1" stopColor="#0f0f0f" />
+        {/* Adjusted stopColor for a lighter background */}
+        <stop offset=".77" stopColor="#8c9195" /> 
+        <stop offset=".83" stopColor="#909497" />
+        <stop offset=".9" stopColor="#9a9da0" />
+        <stop offset=".98" stopColor="#b6b8b8" />
+        <stop offset="1" stopColor="#c0c0c0" />
       </linearGradient>
       
-      {/* 🛑 FIX: Changed xlink:href to xlinkHref */}
       <linearGradient id="c" x1="874" y1="-2.43" x2="874" y2="890.57" xlinkHref="#b" />
       
       <g style={{ isolation: 'isolate' }}>
-        <path fill="#1e2021" d="M0 0h907v907H0z" />
+        <path fill="#FFFFFF" d="M0 0h907v907H0z" />
         <path className="c" d="M838 615.45c-.54-.06-1.51-.13-2.87-.24-75.79-6-130.78-23.35-163.56-36.9-41.49-17.15-75-39.34-99.63-65.94-30.57-33-47.53-73-50.43-118.77-5.21-82.25 15.57-282 46.35-389.22L588 5c-30.3 105.55-52.63 306.59-47.52 387.4 4.79 75.74 51.34 132.38 138.36 168.35 31.51 13 84.47 29.77 157.79 35.52 1.59.12 2.73.22 3.36.28z" />
         <path className="d" d="M723.54 409.4q-9.16 0-18.14-.41c-54.53-2.51-106.1-16.15-162.27-42.91-45.22-21.55-77.07-89.15-94.69-200.95C435.59 83.58 435.28 7 435.28 6.2h19c0 .75.32 76.1 13 156.23C483.6 266 512.66 330.52 551.3 348.92c110.05 52.44 210.92 54.93 348.16 8.58l6.08 18c-67.37 22.75-127.14 33.9-182 33.9z" />
         <path className="e" d="M802.12 286.19c-48.89 0-116.11-4.85-174.4-26.27-28.81-10.59-52.24-31.05-69.63-60.8-13.58-23.21-23.48-52.12-29.45-85.9-10-56.88-5.56-107.58-5.36-109.71l18.92 1.74c-.06.68-4.44 50.72 5.22 105 12.6 70.9 41.82 115.24 86.86 131.79 113.27 41.67 265.24 18.83 266.72 18.6l3 18.77c-1.61.25-39.91 6.11-93.22 6.73-2.84.03-5.72.05-8.66.05zM542.2 5.25l-9.46-.87 9.46.87z" />
@@ -362,6 +372,7 @@ export default function AmongUS({ onComplete }: { onComplete: () => void }) {
         /* Add all the other CSS classNamees from your original code */
         .c{fill:#273065;stroke:#1a1b36}.c,.d,.e,.f,.k,.u{stroke-miterlimit:10}.c,.d,.e,.f,.u,.y{stroke-width:5px}.d{fill:#71160e;stroke:#280f10}.e{fill:#8c6c15}.e,.u{stroke:#38321a}.f{fill:#212021;stroke:#000}.h{fill:#9b3015;stroke:#471d12}.h,.y{stroke-linecap:round;stroke-linejoin:round}.k,.y{fill:none}.k{stroke:#1d1d1b;stroke-width:6px}.l{fill:#d9c905}.m{fill:#25378d}.n{fill:#324d9c}.o{fill:#a71916}.p{fill:#e52320}.q{fill:#aa9f17}.r{fill:#ffeb13}.s{fill:#90378c}.t{fill:#a6529a}.u{fill:#1d1d1b}.v{fill:#5b5c64}.w{fill:#292829}.x{fill:#2f3038}.y{stroke:#252526}
       `}</style>
+    </div>
     </div>
   );
 }
