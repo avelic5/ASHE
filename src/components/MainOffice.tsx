@@ -458,7 +458,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
                     }}
                     className="absolute left-full top-1/2 transform z-50"
                   >
-                    <div className="relative">
+                    <div className="relative cursor-pointer" onClick={() => setNotesOpen(true)}>
                       <div
                         className="rounded-2xl px-4 py-3 shadow-2xl"
                         style={{ backgroundColor: "#D8E9F4" }}
