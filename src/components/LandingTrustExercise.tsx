@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Check, HelpCircle, Shield, Sparkles } from "lucide-react";
 import { QuestionCard } from "./QuestionCard";
 /**
@@ -172,7 +173,7 @@ export default function LandingTrustExercise({ onStart }: Props) {
       )}
 
       {phase === "cofeeTea" && (
-        <section className="grid sm:grid-cols-[220px_1fr] gap-6 items-center">
+        <section className="space-y-6">
           <div>
             <h3
               className="text-base font-light mb-2"
@@ -184,9 +185,50 @@ export default function LandingTrustExercise({ onStart }: Props) {
               className="text-sm font-light mb-4"
               style={{ color: "var(--text-secondary)" }}
             >
-              Choose your beverage of choice.
+              Odaberite napitak — slike su iz public mape.
             </p>
-            <QuestionCard question="Coffee or tea?" answerOptions={[{ answer: "Coffee", description: "Coffee is a great way to start your day.", suggestion: "Coffee is a great way to start your day." }, { answer: "Tea", description: "Tea is a great way to relax.", suggestion: "Tea is a great way to relax." }]} currentCard={1} totalCards={2} onNext={() => setPhase("done")} />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => setPhase("done")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") setPhase("done");
+              }}
+              className="rounded-2xl overflow-hidden border cursor-pointer"
+              style={{ backgroundColor: "var(--card)", borderColor: "var(--muted)" }}
+            >
+              <ImageWithFallback src="/src/public/coffe.jpg" alt="Kafa" className="w-full h-44 object-cover" />
+              <div className="p-4">
+                <h4 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Kafa</h4>
+                <p className="text-xs mt-1" style={{ color: "var(--text-secondary)" }}>Topla, jutarnja energija. Idealno za fokus.</p>
+                <div className="mt-4 inline-block px-4 py-2 rounded-xl text-sm font-light" style={{ backgroundColor: "var(--color-sage)", color: "white", boxShadow: "var(--shadow-xs)" }}>
+                  Odaberi
+                </div>
+              </div>
+            </div>
+
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => setPhase("done")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") setPhase("done");
+              }}
+              className="rounded-2xl overflow-hidden border cursor-pointer"
+              style={{ backgroundColor: "var(--card)", borderColor: "var(--muted)" }}
+            >
+              <ImageWithFallback src="/src/public/tea2.jpg" alt="Čaj" className="w-full h-44 object-cover" />
+              <div className="p-4">
+                <h4 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Čaj</h4>
+                <p className="text-xs mt-1" style={{ color: "var(--text-secondary)" }}>Umirujući izbor za odmor i opuštanje.</p>
+                <div className="mt-4 inline-block px-4 py-2 rounded-xl text-sm font-light" style={{ backgroundColor: "var(--color-sage)", color: "white", boxShadow: "var(--shadow-xs)" }}>
+                  Odaberi
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       )}
