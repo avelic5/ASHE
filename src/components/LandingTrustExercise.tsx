@@ -154,11 +154,7 @@ export default function LandingTrustExercise({ onStart }: Props) {
                 color: "var(--text-secondary)",
               }}
             >
-<<<<<<< HEAD
-              <HelpCircle className="w-4 h-4" /> Ako želiš, možeš preskočiti vježbe disanja.
-=======
-              <HelpCircle className="w-4 h-4" /> You can skip this step if you want.
->>>>>>> 703fd95 (Ispravi na engleski uvodni dio)
+              <HelpCircle className="w-4 h-4" /> If you want, you can skip
             </p>
             <div className="mt-5 flex gap-3">
               <button
@@ -170,22 +166,7 @@ export default function LandingTrustExercise({ onStart }: Props) {
                   boxShadow: "var(--shadow-xs)"
                 }}
               >
-<<<<<<< HEAD
-                Preskoči 
-              </button>
-              <button
-                onClick={() => setPhase("done")} /*Change later to phase coffeeTea*/
-                className="px-4 py-2 rounded-xl border-0 text-sm font-light cursor-pointer transition-all"
-                style={{
-                  backgroundColor: "var(--bg-hover)",
-                  color: "var(--text-primary)",
-                  boxShadow: "var(--shadow-xs)"
-                }}
-              >
-                Preskoči Skroz
-=======
                 Skip
->>>>>>> 703fd95 (Ispravi na engleski uvodni dio)
               </button>
             </div>
           </div>
@@ -217,10 +198,10 @@ export default function LandingTrustExercise({ onStart }: Props) {
             >
               <ImageWithFallback src="/src/public/coffe.jpg" alt="Kafa" className="w-full h-44 object-cover" />
               <div className="p-4">
-                <h4 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Kafa</h4>
-                <p className="text-xs mt-1" style={{ color: "var(--text-secondary)" }}>Topla, jutarnja energija. Idealno za fokus.</p>
+                <h4 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Coffe</h4>
+                <p className="text-xs mt-1" style={{ color: "var(--text-secondary)" }}>Warm, morning energy. Ideal for focus.</p>
                 <div className="mt-4 inline-block px-4 py-2 rounded-xl text-sm font-light" style={{ backgroundColor: "var(--color-sage)", color: "white", boxShadow: "var(--shadow-xs)" }}>
-                  Odaberi
+                  Choose
                 </div>
               </div>
             </div>
@@ -237,10 +218,10 @@ export default function LandingTrustExercise({ onStart }: Props) {
             >
               <ImageWithFallback src="/src/public/tea2.jpg" alt="Čaj" className="w-full h-44 object-cover" />
               <div className="p-4">
-                <h4 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Čaj</h4>
-                <p className="text-xs mt-1" style={{ color: "var(--text-secondary)" }}>Umirujući izbor za odmor i opuštanje.</p>
+                <h4 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Tea</h4>
+                <p className="text-xs mt-1" style={{ color: "var(--text-secondary)" }}>A calming choice for rest and relaxation.</p>
                 <div className="mt-4 inline-block px-4 py-2 rounded-xl text-sm font-light" style={{ backgroundColor: "var(--color-sage)", color: "white", boxShadow: "var(--shadow-xs)" }}>
-                  Odaberi
+                  Choose
                 </div>
               </div>
             </div>
