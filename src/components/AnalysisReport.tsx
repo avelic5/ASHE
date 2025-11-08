@@ -1,3 +1,4 @@
+import React from "react";
 import { motion } from "motion/react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
@@ -10,11 +11,12 @@ import {
   ArrowRight,
   Download,
 } from "lucide-react";
+import data from '../questionsDB/q&a.json';
 
 interface AnalysisReportProps {
   problem?: string;
   answers: string[];
-  testType: "problem-cards" | "rorschach" | "tat";
+  testType: "problem-cards" | "self-esteem" | "well-being";
   onBookSession: () => void;
   onTryAnother: () => void;
 }
@@ -31,25 +33,28 @@ export function AnalysisReport({
     switch (testType) {
       case "problem-cards":
         return "Problem Cards Session";
-      case "rorschach":
-        return "Rorschach Test";
-      case "tat":
-        return "TAT Test";
+      case "self-esteem":
+        return "Self-Esteem Assessment";
+      case "well-being":
+        return "Well-Being Assessment";
     }
   };
-
-  const emotionalPatterns = [
-    "Awareness of emotional states",
-    "Reflective thinking patterns",
-    "Adaptive coping mechanisms",
-  ];
-
   const keyThemes = answers.slice(0, 5);
 
+  const emotionalPatterns = [
+    data.tests[problem?.toLowerCase() || "anxiety"][0]["answers"].find((answer) => answer.answer === keyThemes[0])?.description,
+    data.tests[problem?.toLowerCase() || "anxiety"][1]["answers"].find((answer) => answer.answer === keyThemes[1])?.description,
+    data.tests[problem?.toLowerCase() || "anxiety"][2]["answers"].find((answer) => answer.answer === keyThemes[2])?.description,
+    data.tests[problem?.toLowerCase() || "anxiety"][3]["answers"].find((answer) => answer.answer === keyThemes[3])?.description,
+    data.tests[problem?.toLowerCase() || "anxiety"][4]["answers"].find((answer) => answer.answer === keyThemes[4])?.description,
+  ];
+
   const focusAreas = [
-    "Self-awareness and emotional intelligence",
-    "Stress management techniques",
-    "Building resilience and coping strategies",
+    data.tests[problem?.toLowerCase() || "anxiety"][0]["answers"].find((answer) => answer.answer === keyThemes[0])?.suggestion,
+    data.tests[problem?.toLowerCase() || "anxiety"][1]["answers"].find((answer) => answer.answer === keyThemes[1])?.suggestion,
+    data.tests[problem?.toLowerCase() || "anxiety"][2]["answers"].find((answer) => answer.answer === keyThemes[2])?.suggestion,
+    data.tests[problem?.toLowerCase() || "anxiety"][3]["answers"].find((answer) => answer.answer === keyThemes[3])?.suggestion,
+    data.tests[problem?.toLowerCase() || "anxiety"][4]["answers"].find((answer) => answer.answer === keyThemes[4])?.suggestion,
   ];
 
   const talkingPoints = [

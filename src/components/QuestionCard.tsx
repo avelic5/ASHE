@@ -1,10 +1,16 @@
 import { motion } from "motion/react";
-import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+interface AnswerOption {
+  answer: string;
+  description: string;
+  suggestion: string;
+}
 
 interface QuestionCardProps {
   question: string;
+  answerOptions: AnswerOption[];
   currentCard: number;
   totalCards: number;
   onNext: (answer: string) => void;
@@ -13,20 +19,30 @@ interface QuestionCardProps {
 
 export function QuestionCard({
   question,
+  answerOptions,
   currentCard,
   totalCards,
   onNext,
   encouragementText,
 }: QuestionCardProps) {
-  const [answer, setAnswer] = useState("");
+  const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const [showEncouragement, setShowEncouragement] = useState(false);
+  const [hideContent, setHideContent] = useState(false);
+
+  // Reset selected answer when question changes
+  useEffect(() => {
+    setSelectedAnswer("");
+    setShowEncouragement(false);
+    setHideContent(false);
+  }, [question]);
 
   const handleNext = () => {
-    if (answer.trim()) {
+    if (selectedAnswer) {
+      setHideContent(true); // Hide content immediately
       setShowEncouragement(true);
       setTimeout(() => {
-        onNext(answer);
-        setAnswer("");
+        onNext(selectedAnswer);
+        setSelectedAnswer("");
         setShowEncouragement(false);
       }, 800);
     }
@@ -63,39 +79,50 @@ export function QuestionCard({
           </div>
         </div>
 
-        {/* Question */}
-        <h3 className="mb-8 text-center text-foreground">{question}</h3>
+        {/* Question and Answers - hide when transitioning */}
+        {!hideContent && (
+          <>
+            {/* Question */}
+            <h3 className="mb-8 text-center text-foreground">{question}</h3>
 
-        {/* Answer input */}
-        <div className="space-y-4">
-          <div>
-            <Input
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-              placeholder="Your one-word answer..."
-              className="text-center h-14 rounded-2xl border-2 border-primary/20 focus:border-primary/40 transition-colors"
-              onKeyDown={(e) => e.key === "Enter" && handleNext()}
-            />
-            <p className="text-xs text-muted-foreground text-center mt-2">
-              Answer with one word
-            </p>
-          </div>
+            {/* Answer options */}
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                {answerOptions.map((option, index) => (
+                  <motion.button
+                    key={index}
+                    onClick={() => setSelectedAnswer(option.answer)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`h-14 rounded-2xl border-2 transition-all text-sm font-medium ${
+                      selectedAnswer === option.answer
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-primary/20 hover:border-primary/40 text-foreground"
+                    }`}
+                  >
+                    {option.answer}
+                  </motion.button>
+                ))}
+              </div>
 
-          <Button
-            onClick={handleNext}
-            disabled={!answer.trim()}
-            className="w-full h-12 rounded-2xl bg-primary hover:bg-primary/90 transition-all"
-          >
-            Next Card
-          </Button>
-        </div>
+              <Button
+                onClick={handleNext}
+                disabled={!selectedAnswer}
+                className="w-full h-12 rounded-2xl bg-primary hover:bg-primary/90 transition-all disabled:opacity-50"
+              >
+                Next Card
+              </Button>
+            </div>
+          </>
+        )}
 
         {/* Encouragement text with animation */}
         {showEncouragement && encouragementText && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="absolute inset-0 flex items-center justify-center bg-white/95 backdrop-blur-sm rounded-3xl"
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="absolute inset-0 flex items-center justify-center bg-white/95 backdrop-blur-sm rounded-3xl z-10"
           >
             <motion.p
               initial={{ y: 20 }}
