@@ -69,10 +69,10 @@ export function AnalysisReport({
   ];
 
   const talkingPoints = [
-    `Explored feelings about ${problem || "personal growth"}`,
+    /* `Explored feelings about ${problem || "personal growth"}`,
     "Identified key emotional patterns",
     "Discussed current coping strategies",
-    "Explored future goals and aspirations",
+    "Explored future goals and aspirations", */
   ];
 
   return (
@@ -151,6 +151,46 @@ export function AnalysisReport({
               </div>
             </Card>
 
+            {/* Key Words - Moved to left panel, between Session Summary and Download Report */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-6"
+            >
+              <Card className="p-8 rounded-3xl border-0" style={{ boxShadow: "var(--shadow-medium)" }}>
+                <div className="flex items-center gap-3 mb-6">
+                  <div
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center"
+                    style={{ backgroundColor: "var(--pastel-mint)" }}
+                  >
+                    <Brain className="w-6 h-6 text-white" />
+                  </div>
+                  <h3>Key Words You Used</h3>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  {keyThemes.map((word, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.35 + index * 0.05 }}
+                      className="px-4 py-2 rounded-xl text-sm"
+                      style={{
+                        backgroundColor: `var(--pastel-${
+                          ["lavender", "sky", "mint", "peach", "rose"][index % 5]
+                        })`,
+                        color: "white",
+                      }}
+                    >
+                      {word}
+                    </motion.div>
+                  ))}
+                </div>
+              </Card>
+            </motion.div>
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -163,6 +203,32 @@ export function AnalysisReport({
               >
                 <Download className="w-4 h-4 mr-2" />
                 Download Report
+              </Button>
+            </motion.div>
+
+            {/* Action Buttons - Moved to left panel */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="mt-6 space-y-4"
+            >
+              <Button
+                onClick={onBookSession}
+                size="lg"
+                className="w-full h-12 rounded-2xl bg-primary hover:bg-primary/90 transition-all"
+              >
+                <Sparkles className="w-5 h-5 mr-2" />
+                Book a Real Session
+              </Button>
+
+              <Button
+                onClick={onTryAnother}
+                variant="outline"
+                size="lg"
+                className="w-full h-12 rounded-2xl border-2"
+              >
+                Try Another Activity
               </Button>
             </motion.div>
           </motion.div>
@@ -202,39 +268,6 @@ export function AnalysisReport({
               </div>
             </Card>
 
-            {/* Key Words */}
-            <Card className="p-8 rounded-3xl border-0" style={{ boxShadow: "var(--shadow-medium)" }}>
-              <div className="flex items-center gap-3 mb-6">
-                <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                  style={{ backgroundColor: "var(--pastel-mint)" }}
-                >
-                  <Brain className="w-6 h-6 text-white" />
-                </div>
-                <h3>Key Words You Used</h3>
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                {keyThemes.map((word, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.5 + index * 0.05 }}
-                    className="px-4 py-2 rounded-xl text-sm"
-                    style={{
-                      backgroundColor: `var(--pastel-${
-                        ["lavender", "sky", "mint", "peach", "rose"][index % 5]
-                      })`,
-                      color: "white",
-                    }}
-                  >
-                    {word}
-                  </motion.div>
-                ))}
-              </div>
-            </Card>
-
             {/* Focus Areas */}
             <Card className="p-8 rounded-3xl border-0" style={{ boxShadow: "var(--shadow-medium)" }}>
               <h3 className="mb-4">Possible Focus Areas for Future Therapy</h3>
@@ -265,7 +298,7 @@ export function AnalysisReport({
             </Card>
 
             {/* Talking Points */}
-            <Card className="p-8 rounded-3xl border-0" style={{ boxShadow: "var(--shadow-medium)" }}>
+            {/* <Card className="p-8 rounded-3xl border-0" style={{ boxShadow: "var(--shadow-medium)" }}>
               <h3 className="mb-4">Talking Points for Your Next Session</h3>
               <p className="text-sm text-muted-foreground mb-6">
                 Share these topics with your therapist to continue the conversation:
@@ -285,35 +318,9 @@ export function AnalysisReport({
                   </motion.li>
                 ))}
               </ul>
-            </Card>
+            </Card> */}
           </motion.div>
         </div>
-
-        {/* Action Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
-        >
-          <Button
-            onClick={onBookSession}
-            size="lg"
-            className="h-14 px-8 rounded-2xl bg-primary hover:bg-primary/90 transition-all"
-          >
-            <Sparkles className="w-5 h-5 mr-2" />
-            Book a Real Session
-          </Button>
-
-          <Button
-            onClick={onTryAnother}
-            variant="outline"
-            size="lg"
-            className="h-14 px-8 rounded-2xl border-2"
-          >
-            Try Another Activity
-          </Button>
-        </motion.div>
       </div>
     </div>
   );
