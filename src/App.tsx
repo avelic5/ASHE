@@ -3,7 +3,7 @@ import { MainOffice } from "./components/MainOffice";
 import { ProblemSelection } from "./components/ProblemSelection";
 import { QuestionFlow } from "./components/QuestionFlow";
 import { RorschachTest } from "./components/RorschachTest";
-import { TATTest } from "./components/TATTest";
+import TATTest from "./components/TATTest";
 import { AnalysisReport } from "./components/AnalysisReport";
 import { BookingFlow } from "./components/BookingFlow";
 import { Dashboard } from "./components/Dashboard";

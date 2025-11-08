@@ -4,6 +4,7 @@ import { ActivityCard } from "./ActivityCard";
 import { Brain, Image, MessageSquare, HelpCircle, Sparkles, Music } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
+
 interface MainOfficeProps {
   onActivitySelect: (activity: string) => void;
 }

@@ -1,49 +1,85 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { SmallWinModal } from "./SmallWinModal";
-import { ArrowLeft, Info } from "lucide-react";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Sparkles } from 'lucide-react';
+import { chatWithAI } from '../utils/chatWithAI';
 
+// Dodaj ove tipove ako već nisu definisani
 interface TATTestProps {
-  onComplete: (responses: string[]) => void;
+  onComplete: (results: any) => void;
   onBack: () => void;
 }
 
-export function TATTest({ onComplete, onBack }: TATTestProps) {
+const TATTest: React.FC<TATTestProps> = ({ onComplete, onBack }) => {
   const [currentImage, setCurrentImage] = useState(0);
-  const [response, setResponse] = useState("");
-  const [responses, setResponses] = useState<string[]>([]);
+  const [response, setResponse] = useState('');
+  const [aiResponse, setAiResponse] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [showWinModal, setShowWinModal] = useState(false);
 
-  const totalImages = 5;
-
-  const prompts = [
-    "What's happening in this picture?",
-    "What emotion is present here?",
-    "What might happen next?",
-    "What is the main character feeling?",
-    "What story does this tell you?",
+  // Sample TAT images data
+  const tatImages = [
+    {
+      image: "/images/tat-1.jpg",
+      prompt: "What is happening in this picture? What led up to this situation?"
+    },
+    {
+      image: "/images/tat-2.jpg",
+      prompt: "What are the people thinking and feeling? What will happen next?"
+    },
+    {
+      image: "/images/tat-3.jpg",
+      prompt: "What is the relationship between these people? What are they discussing?"
+    }
   ];
 
-  const handleNext = () => {
-    if (response.trim()) {
-      const newResponses = [...responses, response];
-      setResponses(newResponses);
-      setResponse("");
+  const totalImages = tatImages.length;
+  const currentImageData = tatImages[currentImage];
 
-      if (currentImage < totalImages - 1) {
-        setCurrentImage(currentImage + 1);
-      } else {
-        setShowWinModal(true);
-      }
+  const analyzeWithAI = async (word: string) => {
+  setIsLoading(true);
+  setAiResponse('');
+  
+  try {
+    // Koristi univerzalnu funkciju
+    const analysis = await chatWithAI(
+     word
+    );
+    
+    setAiResponse(analysis);
+   
+  } catch (error) {
+    console.error('Analysis error:', error);
+    setAiResponse("Unable to get analysis at the moment.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+  const handleNext = async () => {
+    if (!response.trim()) return;
+
+    // Analiziraj sa AI
+    await analyzeWithAI(response.trim());
+
+    if (currentImage < totalImages - 1) {
+      // Pređi na sledeću sliku
+      setTimeout(() => {
+        setCurrentImage(prev => prev + 1);
+        setResponse('');
+        setAiResponse('');
+      }, 2000);
+    } else {
+      // Završi test
+      setShowWinModal(true);
     }
   };
 
-  const handleContinue = () => {
+  const handleComplete = () => {
     setShowWinModal(false);
-    onComplete(responses);
+    onComplete({
+      completed: true,
+      totalImages: totalImages,
+      timestamp: new Date().toISOString()
+    });
   };
 
   return (
@@ -59,7 +95,7 @@ export function TATTest({ onComplete, onBack }: TATTestProps) {
         </button>
 
         <div className="text-center">
-          <h3>TAT Test</h3>
+          <h3 className="text-lg font-semibold">TAT Test</h3>
           <p className="text-xs text-muted-foreground">
             Image {currentImage + 1} of {totalImages}
           </p>
@@ -69,31 +105,9 @@ export function TATTest({ onComplete, onBack }: TATTestProps) {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-col items-center justify-center px-4 py-12">
-        <div className="max-w-4xl w-full">
-          {/* Info Panel */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8 p-4 bg-white/60 backdrop-blur-sm rounded-2xl flex items-start gap-3"
-          >
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ backgroundColor: "var(--pastel-mint)" }}
-            >
-              <Info className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-sm">
-                The Thematic Apperception Test (TAT) explores how you interpret stories. Answer
-                the prompt with{" "}
-                <span className="text-primary">one key word</span> that captures your
-                interpretation.
-              </p>
-            </div>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 gap-8">
+      <div className="flex flex-col items-center justify-center px-4 py-8">
+        <div className="max-w-6xl w-full">
+          <div className="grid lg:grid-cols-2 gap-8">
             {/* Image Area */}
             <AnimatePresence mode="wait">
               <motion.div
@@ -102,15 +116,20 @@ export function TATTest({ onComplete, onBack }: TATTestProps) {
                 animate={{ opacity: 1, scale: 1, rotateY: 0 }}
                 exit={{ opacity: 0, scale: 0.95, rotateY: 15 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="bg-white rounded-3xl p-8 flex items-center justify-center"
-                style={{ boxShadow: "var(--shadow-large)" }}
+                className="bg-white rounded-3xl p-6 flex flex-col"
+                style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.1)" }}
               >
-                <div className="w-full aspect-[4/3] bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center overflow-hidden">
-                  <ImageWithFallback
-                    src="https://images.unsplash.com/photo-1725711028475-99a333268847?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbGx1c3RyYXRpb24lMjBzdG9yeXxlbnwxfHx8fDE3NjI1NDIyOTB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-                    alt="Story Illustration"
-                    className="w-full h-full object-cover"
-                  />
+                <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl flex items-center justify-center overflow-hidden min-h-[400px]">
+                  <div className="text-center p-8">
+                    <div className="w-64 h-64 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <span className="text-lg font-semibold text-gray-600">
+                        TAT Image {currentImage + 1}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-500">
+                      {currentImageData.image}
+                    </p>
+                  </div>
                 </div>
               </motion.div>
             </AnimatePresence>
@@ -119,74 +138,112 @@ export function TATTest({ onComplete, onBack }: TATTestProps) {
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white rounded-3xl p-8 flex flex-col justify-between"
-              style={{ boxShadow: "var(--shadow-large)" }}
+              className="bg-white rounded-3xl p-6 flex flex-col justify-between"
+              style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.1)" }}
             >
-              <div>
+              <div className="flex-1">
                 <AnimatePresence mode="wait">
-                  <motion.h3
+                  <motion.div
                     key={currentImage}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="mb-4"
                   >
-                    {prompts[currentImage]}
-                  </motion.h3>
+                    <h3 className="text-xl font-semibold mb-3">
+                      {currentImageData.prompt}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-6">
+                      Answer with <span className="font-semibold text-primary">one word</span>
+                    </p>
+                  </motion.div>
                 </AnimatePresence>
 
-                <p className="text-sm text-muted-foreground mb-6">
-                  Answer with one word that captures the essence.
-                </p>
-
-                <Input
+                <input
                   value={response}
                   onChange={(e) => setResponse(e.target.value)}
-                  placeholder="Your one-word interpretation..."
-                  className="h-14 rounded-2xl border-2 border-primary/20 focus:border-primary/40 mb-4"
+                  placeholder="Enter one word..."
+                  className="w-full h-14 rounded-2xl border-2 border-primary/20 focus:border-primary/40 mb-4 text-lg text-center px-4"
                   onKeyDown={(e) => e.key === "Enter" && handleNext()}
                 />
 
-                <p className="text-xs text-muted-foreground">
-                  💡 Tip: What feeling or theme stands out most to you?
-                </p>
+                {/* AI Analysis Section */}
+                {aiResponse && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="mb-4 p-4 bg-green-50 rounded-2xl border border-green-200"
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <Sparkles className="w-4 h-4 text-green-600" />
+                      <span className="text-sm font-medium text-green-800">AI Insight</span>
+                    </div>
+                    <p className="text-sm text-green-900">{aiResponse}</p>
+                  </motion.div>
+                )}
+
+                <div className="p-3 bg-amber-50 rounded-xl border border-amber-200">
+                  <p className="text-xs text-amber-800 text-center">
+                    💡 What feeling stands out most to you?
+                  </p>
+                </div>
               </div>
 
               <div className="space-y-4 mt-6">
-                {/* Progress dots */}
                 <div className="flex gap-2 justify-center">
                   {Array.from({ length: totalImages }).map((_, i) => (
                     <div
                       key={i}
-                      className="w-2 h-2 rounded-full transition-colors duration-300"
-                      style={{
-                        backgroundColor:
-                          i <= currentImage ? "var(--pastel-mint)" : "var(--muted)",
-                      }}
+                      className={`w-3 h-3 rounded-full transition-all duration-300 ${i === currentImage
+                        ? "bg-blue-500 scale-110"
+                        : i < currentImage
+                          ? "bg-green-500"
+                          : "bg-gray-300"
+                        }`}
                     />
                   ))}
                 </div>
 
-                <Button
+                <button
                   onClick={handleNext}
-                  disabled={!response.trim()}
-                  className="w-full h-12 rounded-2xl bg-primary hover:bg-primary/90 transition-all disabled:opacity-50"
+                  disabled={!response.trim() || isLoading}
+                  className="w-full h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all disabled:opacity-50 flex items-center justify-center gap-3 text-lg font-semibold text-white"
                 >
-                  {currentImage < totalImages - 1 ? "Next Image" : "Complete Test"}
-                </Button>
+                  {isLoading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      AI is analyzing...
+                    </>
+                  ) : currentImage < totalImages - 1 ? (
+                    "Next Image"
+                  ) : (
+                    "Complete Test"
+                  )}
+                </button>
               </div>
             </motion.div>
           </div>
         </div>
       </div>
 
-      {/* Small Win Modal */}
-      <SmallWinModal
-        isOpen={showWinModal}
-        title="TAT Test Complete! 🎉"
-        message="You've explored different narratives and emotions. Your interpretations provide valuable insights into your perspective."
-        onContinue={handleContinue}
-      />
+      {/* Win Modal */}
+      {showWinModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full">
+            <h3 className="text-xl font-semibold mb-2">Test Complete! 🎉</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              You've successfully completed the TAT test.
+            </p>
+            <button
+              onClick={handleComplete}
+              className="w-full h-12 rounded-2xl bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-colors"
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default TATTest;
