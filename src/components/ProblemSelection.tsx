@@ -135,24 +135,47 @@ export function ProblemSelection({
             const isColorLiteral = (s: string) =>
               s.trim().startsWith("#") || s.trim().startsWith("rgb");
 
-            // button class (we use inline style for anxiety-selected to apply hex color)
+            const hexToRgba = (hex: string, alpha = 1) => {
+              let h = hex.replace("#", "").trim();
+              if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+              const r = parseInt(h.substring(0, 2), 16);
+              const g = parseInt(h.substring(2, 4), 16);
+              const b = parseInt(h.substring(4, 6), 16);
+              return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            };
+
+            const toTransparent = (color: string, alpha = 0.15) => {
+              const c = color.trim();
+              if (c.startsWith("#")) return hexToRgba(c, alpha);
+              if (c.startsWith("rgb(")) return c.replace("rgb(", "rgba(").replace(")", `, ${alpha})`);
+              return undefined;
+            };
+
+            // button class
             const buttonClass = `p-6 rounded-2xl border-2 transition-all relative ${
               isSelected ? "shadow-md" : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"
             }`;
 
-            const buttonStyle =
-              isSelected && problem.id === "anxiety"
-                ? { backgroundColor: "rgba(255,182,193,0.15)", borderColor: "#ffb6c1" }
-                : undefined;
-
+            // set border + subtle bg on selected to match the color
             const iconBg = iconBgMap[problem.id];
+            const selectedBorderColor = isColorLiteral(iconBg) ? iconBg : undefined;
+            const selectedBgColor = isColorLiteral(iconBg) ? toTransparent(iconBg, 0.15) : undefined;
+
+            const buttonStyle = isSelected
+              ? {
+                  ...(selectedBorderColor ? { borderColor: selectedBorderColor } : {}),
+                  ...(selectedBgColor ? { backgroundColor: selectedBgColor } : {}),
+                }
+              : undefined;
+
             const iconClass = `w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 ${
               !isColorLiteral(iconBg) ? iconBg : ""
             }`;
             const iconStyle = isColorLiteral(iconBg) ? { backgroundColor: iconBg } : undefined;
 
             const checkBg = checkBgMap[problem.id];
-            const checkClass = `absolute bottom-4 left-1/2 -translate-x-1/2 w-7 h-7 rounded-full flex items-center justify-center ${
+            // place checkmark in the top-right so it doesn't overlap the label
+            const checkClass = `absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center shadow-md ${
               !isColorLiteral(checkBg) ? checkBg : ""
             }`;
             const checkStyle = isColorLiteral(checkBg) ? { backgroundColor: checkBg } : undefined;
@@ -222,7 +245,9 @@ export function ProblemSelection({
           >
             <div className="flex items-center justify-center gap-3">
               <div className="w-12 h-12 rounded-full bg-orange-300 flex items-center justify-center">
-                <Plus className="w-6 h-6 text-white" />
+                <div style={{ backgroundColor: "rgb(255, 212, 163)" }} className="w-12 h-12 rounded-full flex items-center justify-center">
+                  <Plus className="w-6 h-6 text-white" />
+                </div>
               </div>
               <p className="text-gray-600 font-medium">
                 Something else (custom)
