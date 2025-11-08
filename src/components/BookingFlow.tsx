@@ -160,7 +160,7 @@ export function BookingFlow({ onComplete, onBack }: BookingFlowProps) {
                     transition: { duration: 0.2 },
                   }}
                   whileTap={{ scale: 0.98 }}
-                  className="text-left transition-all rounded-3xl"
+                  className="text-left transition-all rounded-3xl cursor-pointer"
                   style={{
                     outline:
                       sessionType === "in-person"
@@ -237,7 +237,7 @@ export function BookingFlow({ onComplete, onBack }: BookingFlowProps) {
                     transition: { duration: 0.2 },
                   }}
                   whileTap={{ scale: 0.98 }}
-                  className="text-left transition-all rounded-3xl"
+                  className="text-left transition-all rounded-3xl cursor-pointer"
                   style={{
                     outline:
                       sessionType === "online"
@@ -385,13 +385,13 @@ export function BookingFlow({ onComplete, onBack }: BookingFlowProps) {
                     </h3>
                     {!selectedDate ? (
                       <p
-                        className="text-sm font-light"
+                        className="text-sm font-light "
                         style={{ color: "var(--text-secondary)" }}
                       >
                         Please select a date first
                       </p>
                     ) : (
-                      <div className="space-y-3">
+                      <div className="space-y-3 ">
                         {timeSlots.map((time, index) => (
                           <motion.button
                             key={time}
@@ -434,7 +434,7 @@ export function BookingFlow({ onComplete, onBack }: BookingFlowProps) {
                   <Button
                     onClick={() => setStep(3)}
                     disabled={!canContinueStep2}
-                    className="h-12 px-10 rounded-2xl text-sm font-light transition-all disabled:opacity-40 border-0"
+                    className="h-12 px-10 rounded-2xl text-sm font-light transition-all disabled:opacity-40 border-0 cursor-pointer"
                     style={{
                       backgroundColor: canContinueStep2
                         ? "var(--color-sage)"
@@ -571,7 +571,7 @@ export function BookingFlow({ onComplete, onBack }: BookingFlowProps) {
                 >
                   <Button
                     onClick={handleConfirmBooking}
-                    className="h-12 px-10 rounded-2xl text-sm font-light transition-all border-0"
+                    className="h-12 px-10 rounded-2xl text-sm font-light cursor-pointer transition-all border-0"
                     style={{
                       backgroundColor: "var(--color-sage)",
                       color: "white",

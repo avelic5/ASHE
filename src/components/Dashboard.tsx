@@ -105,11 +105,11 @@ export function Dashboard({ onBackToHome }: DashboardProps) {
         >
           <button
             onClick={onBackToHome}
-            className="flex items-center gap-2 transition-colors mb-6 font-light"
+            className="flex items-center gap-2 transition-colors mb-6 font-light "
             style={{ color: "var(--text-secondary)" }}
           >
-            <Home className="w-4 h-4" />
-            <span className="text-sm">Back to Office</span>
+            <Home className="w-4 h-4 " />
+            <span className="text-sm cursor-pointer">Back to Office</span>
           </button>
 
           <div className="flex items-center justify-between flex-wrap gap-4">
@@ -528,7 +528,9 @@ export function Dashboard({ onBackToHome }: DashboardProps) {
                                 </p>
                                 <Checkbox
                                   checked={isCompleted}
-                                  onCheckedChange={() => handleToggleItem(index)}
+                                  onCheckedChange={() =>
+                                    handleToggleItem(index)
+                                  }
                                   className="mt-0.5"
                                 />
                               </div>
