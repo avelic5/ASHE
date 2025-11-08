@@ -50,9 +50,11 @@ export function AnalysisReport({
   ];
 
   const focusAreas = [
-    "Self-awareness and emotional intelligence",
-    "Stress management techniques",
-    "Building resilience and coping strategies",
+    data.tests[problem?.toLowerCase() || "anxiety"][0]["answers"].find((answer) => answer.answer === keyThemes[0])?.suggestion,
+    data.tests[problem?.toLowerCase() || "anxiety"][1]["answers"].find((answer) => answer.answer === keyThemes[1])?.suggestion,
+    data.tests[problem?.toLowerCase() || "anxiety"][2]["answers"].find((answer) => answer.answer === keyThemes[2])?.suggestion,
+    data.tests[problem?.toLowerCase() || "anxiety"][3]["answers"].find((answer) => answer.answer === keyThemes[3])?.suggestion,
+    data.tests[problem?.toLowerCase() || "anxiety"][4]["answers"].find((answer) => answer.answer === keyThemes[4])?.suggestion,
   ];
 
   const talkingPoints = [
