@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Check, HelpCircle, Shield, Sparkles } from "lucide-react";
 import { QuestionCard } from "./QuestionCard";
+import AmonUS from "./AmonUS";
 /**
  * LandingTrustExercise
  * A 2–3 minute, privacy-first micro‑exercise for your homepage to build trust before sign-up.
@@ -35,7 +36,7 @@ const tips: Record<string, string[]> = {
 };
 
 export default function LandingTrustExercise({ onStart }: Props) {
-  const [phase, setPhase] = useState<"breath" |"cofeeTea"| "done">(
+  const [phase, setPhase] = useState<"breath" |"cofeeTea"| "miniGame" | "done">(
     "breath"
   );
   const [timer, setTimer] = useState(0);
@@ -157,7 +158,7 @@ export default function LandingTrustExercise({ onStart }: Props) {
             </p>
             <div className="mt-5 flex gap-3">
               <button
-                onClick={() => setPhase("cofeeTea")}
+                onClick={() => setPhase("done")} /*Change later to phase coffeeTea*/
                 className="px-4 py-2 rounded-xl border-0 text-sm font-light cursor-pointer transition-all"
                 style={{
                   backgroundColor: "var(--bg-hover)",
@@ -233,6 +234,9 @@ export default function LandingTrustExercise({ onStart }: Props) {
         </section>
       )}
 
+      {phase === "miniGame" && (
+        <AmonUS onComplete={() => setPhase("done")} />
+      )}
       {phase === "done" && (
         <section className="text-center space-y-4">
           <div
