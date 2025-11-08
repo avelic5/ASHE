@@ -41,11 +41,12 @@ export function QuestionCard({
     setSelectedAnswer(answer);
     setHideContent(true); // Hide content immediately
     setShowEncouragement(true);
+    // keep the encouragement visible a touch longer before advancing
     setTimeout(() => {
       onNext(answer);
       setSelectedAnswer("");
       setShowEncouragement(false);
-    }, 800);
+    }, 1800);
   };
 
   return (
@@ -148,7 +149,8 @@ export function QuestionCard({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.3 }}
+            // slightly longer, still snappy
+            transition={{ duration: 0.4,}}
             className="absolute inset-0 flex items-center justify-center backdrop-blur-md rounded-3xl z-10"
             style={{
               background:
