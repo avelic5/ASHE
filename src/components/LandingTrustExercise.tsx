@@ -154,9 +154,20 @@ export default function LandingTrustExercise({ onStart }: Props) {
                 color: "var(--text-secondary)",
               }}
             >
-              <HelpCircle className="w-4 h-4" /> Ako želiš, možeš preskočiti.
+              <HelpCircle className="w-4 h-4" /> Ako želiš, možeš preskočiti vježbe disanja.
             </p>
             <div className="mt-5 flex gap-3">
+              <button
+                onClick={() => setPhase("cofeeTea")} /*Change later to phase coffeeTea*/
+                className="px-4 py-2 rounded-xl border-0 text-sm font-light cursor-pointer transition-all"
+                style={{
+                  backgroundColor: "var(--bg-hover)",
+                  color: "var(--text-primary)",
+                  boxShadow: "var(--shadow-xs)"
+                }}
+              >
+                Preskoči 
+              </button>
               <button
                 onClick={() => setPhase("done")} /*Change later to phase coffeeTea*/
                 className="px-4 py-2 rounded-xl border-0 text-sm font-light cursor-pointer transition-all"
@@ -166,7 +177,7 @@ export default function LandingTrustExercise({ onStart }: Props) {
                   boxShadow: "var(--shadow-xs)"
                 }}
               >
-                Preskoči
+                Preskoči Skroz
               </button>
             </div>
           </div>
@@ -194,9 +205,9 @@ export default function LandingTrustExercise({ onStart }: Props) {
             <div
               role="button"
               tabIndex={0}
-              onClick={() => setPhase("done")}
+              onClick={() => setPhase("miniGame")}
               onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") setPhase("done");
+                if (e.key === "Enter" || e.key === " ") setPhase("miniGame");
               }}
               className="rounded-2xl overflow-hidden border cursor-pointer"
               style={{ backgroundColor: "var(--card)", borderColor: "var(--muted)" }}
@@ -214,9 +225,9 @@ export default function LandingTrustExercise({ onStart }: Props) {
             <div
               role="button"
               tabIndex={0}
-              onClick={() => setPhase("done")}
+              onClick={() => setPhase("miniGame")}
               onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") setPhase("done");
+                if (e.key === "Enter" || e.key === " ") setPhase("miniGame");
               }}
               className="rounded-2xl overflow-hidden border cursor-pointer"
               style={{ backgroundColor: "var(--card)", borderColor: "var(--muted)" }}
