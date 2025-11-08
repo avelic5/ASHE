@@ -4,6 +4,7 @@ import { ActivityCard } from "./ActivityCard";
 import { FaTrash } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
 import AmongUS from "./AmonUS";
+import { User, Users } from "lucide-react"; // Dodaj ikonice
 
 import {
   Sun,
@@ -32,12 +33,16 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
   const [isAIOpen, setIsAIOpen] = useState<boolean>(false);
   const [inputMessage, setInputMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [userMessages, setUserMessages] = useState<Message[]>([]); // Korisničke poruke
-  const [aiMessages, setAIMessages] = useState<Message[]>([]); // AI poruke
-
-  // State za bubble
+  const [userMessages, setUserMessages] = useState<Message[]>([]);
+  const [aiMessages, setAIMessages] = useState<Message[]>([]);
+  const [currentAvatar, setCurrentAvatar] = useState<"male" | "female">("male");
   const [showBubble, setShowBubble] = useState(false);
   const [bubblePosition, setBubblePosition] = useState(0);
+
+  // Funkcija za dobijanje putanje avatara
+  const getAvatarPath = () => {
+    return currentAvatar === "male" ? "/src/public/Male1.png" : "/src/public/Female3.png";
+  };
 
   // Efekt za animaciju bubble-a gore-dole
   useEffect(() => {
@@ -49,8 +54,6 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
 
     return () => clearInterval(interval);
   }, [showBubble]);
-
-
 
   // Auto-hide bubble kada korisnik tipka
   useEffect(() => {
@@ -70,34 +73,27 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
       timestamp: new Date(),
     };
 
-    // Dodaj korisničku poruku u userMessages
     setUserMessages((prev) => [...prev, userMessage]);
     setInputMessage("");
     setIsLoading(true);
 
     try {
-      // Pozovi AI funkciju
       const aiResponse = await chatWithAI(inputMessage.trim());
-
       const aiMessage: Message = {
         id: Date.now() + 1,
         role: "assistant",
         content: aiResponse,
         timestamp: new Date(),
       };
-
-      // Dodaj AI odgovor u aiMessages
       setAIMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
       console.error("Error communicating with AI:", error);
-
       const errorMessage: Message = {
         id: Date.now() + 1,
         role: "assistant",
         content: "Sorry, I encountered an error. Please try again.",
         timestamp: new Date(),
       };
-
       setAIMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
@@ -114,11 +110,9 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
     const maxLength = Math.max(userMessages.length, aiMessages.length);
 
     for (let i = 0; i < maxLength; i++) {
-      // Prvo dodaj korisničku poruku (ako postoji)
       if (userMessages[i]) {
         combined.push(userMessages[i]);
       }
-      // Zatim dodaj AI odgovor (ako postoji)
       if (aiMessages[i]) {
         combined.push(aiMessages[i]);
       }
@@ -157,18 +151,21 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
       id: "well-being",
     },
   ];
+
   // Efekt za prikaz bubble-a nakon određenog vremena
   useEffect(() => {
-    // Sakrij bubble prvo
     setShowBubble(false);
-
-    // Zatim prikaži nakon delay-a
     const timer = setTimeout(() => {
       setShowBubble(true);
     }, notesOpen ? 1200 : 800);
 
     return () => clearTimeout(timer);
   }, [notesOpen]);
+
+  // Funkcija za toggle avatar
+  const toggleAvatar = () => {
+    setCurrentAvatar(currentAvatar === "male" ? "female" : "male");
+  };
 
   return (
     <div
@@ -188,7 +185,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
         />
       </div>
 
-      {/* Decorative blobs (iza sadržaja) */}
+      {/* Decorative blobs */}
       <motion.div
         animate={{ y: [0, -10, 0] }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -203,7 +200,8 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
       />
 
       {/* Top Navigation */}
-      <nav className="absolute top-1 left-1 z-10 flex items-center justify-between p-6">
+      <nav className="absolute top-1 left-1 z-60 flex items-center justify-between p-6 w-full">
+        
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -230,9 +228,39 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
             </p>
           </div>
         </motion.div>
+
+        {/* Avatar Switch Button */}
+        <motion.button
+          onClick={toggleAvatar}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="flex items-center z-50 gap-2 px-3 py-2 rounded-full backdrop-blur-sm transition-all cursor-pointer"
+          style={{
+            backgroundColor: "var(--bg-card)",
+            boxShadow: "var(--shadow-sm)",
+            border: "1px solid var(--bg-hover)"
+          }}
+          title={`Switch to ${currentAvatar === "male" ? "female" : "male"} avatar`}
+        >
+          <motion.div
+            key={currentAvatar}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          >
+            {currentAvatar === "male" ? (
+              <User className="w-4 h-4" style={{ color: "var(--text-primary)" }} />
+            ) : (
+              <Users className="w-4 h-4" style={{ color: "var(--text-primary)" }} />
+            )}
+          </motion.div>
+          <span className="text-xs font-light" style={{ color: "var(--text-primary)" }}>
+            {currentAvatar === "male" ? "Male" : "Female"}
+          </span>
+        </motion.button>
       </nav>
 
-      {/* Chat panel – transparent with only message bubbles visible */}
+      {/* Chat panel */}
       <motion.aside
         role="dialog"
         aria-label="Chat"
@@ -255,6 +283,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
       >
         <div className="h-full flex flex-col">
           {/* All messages - scrollable area */}
+          
           <div className="flex-1 overflow-y-auto space-y-3 mb-3">
             {allMessages.map((message) => (
               <div key={message.id}>
@@ -403,7 +432,6 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
         <AnimatePresence mode="sync">
           {notesOpen ? (
             <div className="relative">
-
               {/* Avatar kada je panel otvoren */}
               <motion.div
                 layoutId="session-avatar"
@@ -420,7 +448,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
                 }}
               >
                 <img
-                  src="/src/public/Male1.png"
+                  src={getAvatarPath()}
                   alt="AI Agent"
                   onClick={(e) => {
                     e.preventDefault();
@@ -442,7 +470,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
                       opacity: 1,
                       scale: 1,
                       x: 0,
-                      y: [0, -8, -8, 0, 0] // 0 -> gore -8 -> pauza -> dolje 0 -> pauza
+                      y: [0, -8, -8, 0, 0]
                     }}
                     exit={{ opacity: 0, scale: 0, x: -20 }}
                     transition={{
@@ -452,7 +480,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
                       y: {
                         duration: 3,
                         repeat: Infinity,
-                        times: [0, 0.3, 0.5, 0.8, 1], // Vremenski trenuci za svaku poziciju
+                        times: [0, 0.3, 0.5, 0.8, 1],
                         ease: "easeInOut"
                       }
                     }}
@@ -489,7 +517,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
               >
                 {/* Glowing background effect */}
                 <motion.div
-                  className="absolute inset-0 rounded-full "
+                  className="absolute inset-0 rounded-full"
                   animate={{
                     boxShadow: [
                       "0 0 20px 10px rgba(139, 127, 184, 0.4)",
@@ -503,13 +531,12 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
                     ease: "easeInOut",
                   }}
                   style={{
-                    background:
-                      "radial-gradient(circle, rgba(139, 127, 184, 0.3) 0%, transparent 70%)",
+                    background: "radial-gradient(circle, rgba(139, 127, 184, 0.3) 0%, transparent 70%)",
                   }}
                 />
                 <div className="relative w-35 h-35 sm:w-35 sm:h-35 rounded-full overflow-hidden shadow-2xl ring-white/20 transition-transform">
                   <img
-                    src="/src/public/Male1.png"
+                    src={getAvatarPath()}
                     alt="AI Agent"
                     className="w-full h-full object-cover"
                   />
@@ -519,14 +546,13 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
           )}
         </AnimatePresence>
 
-        {/* Tekst — dodatno spušten; još niže kad je chat otvoren */}
+        {/* Ostali sadržaj ostaje isti */}
         <motion.div
           layout
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0 }}
-          className={`text-center max-w-2xl w-full ${notesOpen ? "mt-0" : "mt-0"
-            }`}
+          className={`text-center max-w-2xl w-full ${notesOpen ? "mt-0" : "mt-0"}`}
         >
           <h2
             className="mb-4 text-2xl font-light"
@@ -540,7 +566,6 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
           </p>
         </motion.div>
 
-        {/* Kartice — kolona ispod desktopa; wrap od sm naviše; spuštene još malo */}
         <motion.div
           layout
           initial={{ opacity: 0, y: 18 }}
@@ -554,9 +579,7 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
               className="absolute -inset-6 sm:-inset-8 rounded-4xl sm:rounded-[3rem]"
             />
             <div
-              className="relative flex flex-col /* mobile-first: kolona */
-                                sm:flex-row sm:flex-wrap /* od sm: wrap */
-                                gap-3 sm:gap-8 justify-center p-6 sm:p-10"
+              className="relative flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-8 justify-center p-6 sm:p-10"
             >
               {activities.map((activity, index) => (
                 <motion.div
@@ -577,7 +600,6 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
           </div>
         </motion.div>
 
-        {/* Hint */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
