@@ -13,12 +13,14 @@ import {
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { chatWithAI } from "../utils/chatWithAI";
 
+
 type Message = {
   id: number;
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
 };
+
 
 interface MainOfficeProps {
   onActivitySelect: (activity: string) => void;
@@ -196,119 +198,121 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
 
       {/* Chat panel – force bottom-left positioning */}
       <motion.aside
-  role="dialog"
-  aria-label="Notes"
-  aria-modal="false"
-  className="fixed z-50 w-full max-w-md"
-  initial={{ opacity: 0, scale: 0.98 }}
-  animate={{
-    opacity: notesOpen ? 1 : 0,
-    scale: notesOpen ? 1 : 0.98,
-  }}
-  transition={{ type: "spring", stiffness: 260, damping: 22 }}
-  style={{
-    pointerEvents: notesOpen ? "auto" : "none",
-    left: 16,
-    bottom: 16,
-    top: "auto",
-    right: "auto",
-  }}
->
-  <div className="w-full rounded-2xl p-4 bg-white/60 backdrop-blur-xl shadow-2xl border-2 border-white/40 flex flex-col gap-3 will-change-transform">
-    {/* Header */}
-    <div className="flex items-start justify-between gap-2">
-      <div>
-        <h3 className="text-sm font-semibold text-foreground drop-shadow-sm">
-          Session notes
-        </h3>
-        <p className="text-xs text-muted-foreground">
-          Jot ideas here. AI assist coming soon.
-        </p>
-      </div>
-      <button
-        onClick={() => setNotesOpen(false)}
-        className="h-8 px-3 rounded-xl text-xs font-medium bg-white/90 hover:bg-white border border-border text-foreground shadow-sm hover:shadow transition-all"
+        role="dialog"
+        aria-label="Notes"
+        aria-modal="false"
+        className="fixed z-50 w-full max-w-md"
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{
+          opacity: notesOpen ? 1 : 0,
+          scale: notesOpen ? 1 : 0.98,
+        }}
+        transition={{ type: "spring", stiffness: 260, damping: 22 }}
+        style={{
+          pointerEvents: notesOpen ? "auto" : "none",
+          left: 16,
+          bottom: 16,
+          top: "auto",
+          right: "auto",
+        }}
       >
-        Hide
-      </button>
-    </div>
+        <div className="w-full rounded-2xl p-4 bg-white/60 backdrop-blur-xl shadow-2xl border-2 border-white/40 flex flex-col gap-3 will-change-transform">
+          {/* Header */}
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <h3 className="text-sm font-semibold text-foreground drop-shadow-sm">
+                Session notes
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Jot ideas here. AI assist coming soon.
+              </p>
+            </div>
+            <button
+              onClick={() => setNotesOpen(false)}
+              className="h-8 px-3 rounded-xl text-xs font-medium bg-white/90 hover:bg-white border border-border text-foreground shadow-sm hover:shadow transition-all"
+            >
 
-    {/* Chat Messages Container - SCROLLABLE */}
-    <div className="flex-1 overflow-hidden flex flex-col min-h-0">
-      <div className="flex-1 overflow-y-auto max-h-60 min-h-40 rounded-xl bg-white/70 border-2 border-border/60">
-        <div className="p-3 space-y-3">
-          {allMessages.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-4">
-              Start a conversation with AI...
-            </p>
-          ) : (
-            allMessages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-lg p-3 text-sm flex flex-col ${
-                    message.role === 'user'
-                      ? 'bg-gray-100 text-blue-800'
-                      : 'bg-gray-100 text-gray-800'
-                  }`}
-                >
-                  <span className="font-bold text-xs mb-1">
-                    {message.role === 'user' ? "User:" : "Agent:"}
-                  </span>
-                  <p className="whitespace-pre-wrap">
-                    {message.content}
+              Hide
+            </button>
+          </div>
+
+          {/* Chat Messages Container - SCROLLABLE */}
+          <div className="flex-1 overflow-hidden flex flex-col min-h-0">
+            <div className="flex-1 overflow-y-auto max-h-60 min-h-40 rounded-xl bg-white/70 border-2 border-border/60">
+              <div className="p-3 space-y-3">
+                {allMessages.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    Start a conversation with AI...
                   </p>
-                </div>
-              </div>
-            ))
-          )}
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-gray-100 text-gray-800 rounded-lg p-3 text-sm max-w-[80%]">
-                <span className="font-bold text-xs mb-1">Agent:</span>
-                <p>Thinking...</p>
+                ) : (
+                  allMessages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div
+                        className={`max-w-[80%] rounded-lg p-3 text-sm flex flex-col ${message.role === 'user'
+                            ? 'bg-gray-100 text-blue-800'
+                            : 'bg-gray-100 text-gray-800'
+                          }`}
+                      >
+                        <span className="font-bold text-xs mb-1">
+                          {message.role === 'user' ? "User:" : "Agent:"}
+                        </span>
+                        <p className="whitespace-pre-wrap">
+                          {message.content}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                )}
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-gray-100 text-gray-800 rounded-lg p-3 text-sm max-w-[80%]">
+                      <span className="font-bold text-xs mb-1">Agent:</span>
+                      <p>Thinking...</p>
+                    </div>
+                  </div>
+                )}
+
+               
               </div>
             </div>
-          )}
-        </div>
-      </div>
-    </div>
 
-    {/* Input Area */}
-    <textarea
-      value={inputMessage}
-      onChange={(e) => setInputMessage(e.target.value)}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          handleSendMessage();
-        }
-      }}
-      disabled={isLoading}
-      placeholder="Type your message..."
-      className="min-h-24 max-h-40 rounded-xl p-3 text-sm bg-white/70 placeholder:text-muted-foreground text-foreground border-2 border-border/60 outline-none focus:ring-2 focus:ring-[var(--focus-outline)] focus:border-border resize-none shadow-sm"
-    />
-    <div className="flex items-center justify-end gap-2 cursor-pointer">
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          clearAllMessages();
-        }}
-        className="cursor-pointer h-8 px-3 rounded-xl text-xs font-medium bg-white/70 hover:bg-white/90 border border-border text-foreground shadow-sm hover:shadow transition-all"
-      >
-        Clear
-      </button>
-      <button
-        onClick={() => setNotesOpen(false)}
-        className="h-8 px-3 rounded-xl text-xs font-semibold bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 shadow-md hover:shadow-lg transition-all"
-      >
-        Done
-      </button>
-    </div>
-  </div>
-</motion.aside> 
+            {/* Input Area */}
+            <textarea
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSendMessage();
+                }
+              }}
+              disabled={isLoading}
+              placeholder="Type your message..."
+              className="min-h-24 max-h-40 rounded-xl p-3 text-sm bg-white/70 placeholder:text-muted-foreground text-foreground border-2 border-border/60 outline-none focus:ring-2 focus:ring-[var(--focus-outline)] focus:border-border resize-none shadow-sm"
+            />
+            <div className="flex items-center justify-end gap-2 cursor-pointer">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  clearAllMessages();
+                }}
+                className="cursor-pointer h-8 px-3 rounded-xl text-xs font-medium bg-white/70 hover:bg-white/90 border border-border text-foreground shadow-sm hover:shadow transition-all"
+              >
+                Clear
+              </button>
+              <button
+                onClick={() => setNotesOpen(false)}
+                className="h-8 px-3 rounded-xl text-xs font-semibold bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 shadow-md hover:shadow-lg transition-all"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+          </div>
+      </motion.aside>
 
       {/* Main content: kolona + raste preko min visine; centrira se kad je chat otvoren */}
       <motion.main
@@ -323,10 +327,10 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
         {notesOpen && (
           <motion.div
             layoutId="session-avatar"
-            className="absolute top-0 left-10 z-50 w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-xl"
+            className="absolute top-0 left-10 z-30 w-30 h-20 rounded-full overflow-hidden border-4 border-white shadow-xl"
           >
-            <ImageWithFallback
-              src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=512&q=80"
+            <img
+              src="/src/public/Male1.png"
               alt="AI Agent"
               className="w-full h-full object-cover"
             />
@@ -339,14 +343,36 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
             layoutId="session-avatar"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             transition={{ delay: 0.15 }}
             onClick={() => setNotesOpen(true)}
-            className="mb-6 rounded-full focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--focus-outline)]"
+            className="relative mb-6 rounded-full focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--focus-outline)] cursor-pointer"
             aria-label="Open notes panel"
           >
-            <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-full overflow-hidden shadow-2xl border-4 border-white ring-4 ring-white/20">
-              <ImageWithFallback
-                src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=512&q=80"
+            {/* Glowing background effect */}
+            <motion.div
+              className="absolute inset-0 rounded-full"
+              animate={{
+                boxShadow: [
+                  "0 0 20px 10px rgba(139, 127, 184, 0.4)",
+                  "0 0 40px 20px rgba(139, 127, 184, 0.6)",
+                  "0 0 20px 10px rgba(139, 127, 184, 0.4)",
+                ],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              style={{
+                background:
+                  "radial-gradient(circle, rgba(139, 127, 184, 0.3) 0%, transparent 70%)",
+              }}
+            />
+            <div className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full overflow-hidden shadow-2xl border-4 border-white ring-4 ring-white/20 transition-transform">
+              <img
+                src="/src/public/Male1.png"
                 alt="AI Agent"
                 className="w-full h-full object-cover"
               />
