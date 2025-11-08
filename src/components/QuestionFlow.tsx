@@ -4,6 +4,7 @@ import { QuestionCard } from "./QuestionCard";
 import { SmallWinModal } from "./SmallWinModal";
 import { ArrowLeft } from "lucide-react";
 import questionsData from "../questionsDB/q&a.json";
+import { getCustomQuestions } from "../utils/generateQuestions";
 
 interface QuestionFlowProps {
   problem: string;
@@ -38,19 +39,33 @@ export function QuestionFlow({ problem, onComplete, onBack }: QuestionFlowProps)
   const [questions, setQuestions] = useState<QuestionData[]>([]);
 
   // Map problem label to JSON key
-  const getProblemKey = (problemLabel: string): string => {
+  const getProblemKey = (problemLabel: string): string | null => {
     const key = problemLabel.toLowerCase();
     if (key === "anxiety" || key === "depression" || key === "adhd") {
       return key;
     }
-    // Default to anxiety if custom problem
-    return "anxiety";
+    // Return null for custom problems (they'll be handled separately)
+    return null;
   };
 
   useEffect(() => {
     const problemKey = getProblemKey(problem);
-    const categoryQuestions = (questionsData as { tests: Record<string, QuestionData[]> }).tests[problemKey] || [];
-    setQuestions(categoryQuestions);
+    
+    if (problemKey) {
+      // Use predefined questions for standard problems
+      const categoryQuestions = (questionsData as { tests: Record<string, QuestionData[]> }).tests[problemKey] || [];
+      setQuestions(categoryQuestions);
+    } else {
+      // Try to get custom questions from localStorage
+      const customQuestions = getCustomQuestions(problem);
+      if (customQuestions && customQuestions.length > 0) {
+        setQuestions(customQuestions);
+      } else {
+        // Fallback to anxiety questions if custom questions not found
+        const categoryQuestions = (questionsData as { tests: Record<string, QuestionData[]> }).tests["anxiety"] || [];
+        setQuestions(categoryQuestions);
+      }
+    }
   }, [problem]);
 
   const handleNext = (answer: string) => {
