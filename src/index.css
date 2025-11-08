@@ -36,3 +36,19 @@
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
+
+/* selected day highlight for calendar */
+.selected-day {
+  background-color: rgb(255, 212, 163) !important;
+  color: #000 !important;
+  border-radius: 0.5rem; /* match card rounding */
+  box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+}
+.selected-day:hover,
+.selected-day:focus {
+  opacity: 0.95;
+}
+/* optional: ensure day button inner text inherits */
+.selected-day > * {
+  color: inherit !important;
+}
