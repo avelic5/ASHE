@@ -50,7 +50,7 @@
    - **Feelings**
    - **Self-Confidence**
 5. **Answer prompts** — receive a **stimulus**, brief **analysis**, and **next steps**.  
-6. **Ready to talk to a human?** — **Book a session** (sign-in + phone verification).
+6. **Ready to talk to a human?** — **Book a session** (sign-in + phone verification - now hardcoded value:123456).
 
 ---
 
