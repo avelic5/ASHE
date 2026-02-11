@@ -10,7 +10,6 @@
 **Team:** Aldin Velić · Mirza Hodžić · Vedad Trako · Amel Husika · Adnan Šemić
 
 
-
 ---
 
 ## Features
