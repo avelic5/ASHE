@@ -580,13 +580,13 @@ export function MainOffice({ onActivitySelect }: MainOfficeProps) {
             />
             <div
   className="
-    grid 
-    grid-cols-1 sm:grid-cols-2 
-    gap-6 sm:gap-8 
-    justify-items-center 
-    content-center 
+    flex
+    flex-wrap
+    justify-center
+    items-center
+    gap-6 sm:gap-8
     mx-auto 
-    max-w-md sm:max-w-2xl
+    max-w-md sm:max-w-3xl
     p-4 sm:p-8
   "
 >

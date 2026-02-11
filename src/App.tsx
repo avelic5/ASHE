@@ -1,29 +1,17 @@
-import React, { useState } from "react";
+import React, { createContext, useContext, useState } from "react";
+import { BrowserRouter, Routes, Route, useNavigate, useLocation, Navigate } from "react-router";
 import LandingTrustExercise from "./components/LandingTrustExercise";
 import { MainOffice } from "./components/MainOffice";
 import { ProblemSelection } from "./components/ProblemSelection";
 import { QuestionFlow } from "./components/QuestionFlow";
 import { SelfEsteemTest } from "./components/SelfEsteemTest";
 import { WellBeingTest } from "./components/WellBeingTest";
-// import { TATTest } from "./components/TATTest";
 import { AnalysisReport } from "./components/AnalysisReport";
 import { BookingFlow } from "./components/BookingFlow";
 import { Dashboard } from "./components/Dashboard";
 import ReactPlayer from 'react-player';
 
-type Screen =
-  | "landing"
-  | "main-office"
-  | "problem-selection"
-  | "question-flow"
-  | "self-esteem"
-  | "well-being"
-  | "analysis"
-  | "booking"
-  | "dashboard";
-
 type ActivityType = "problem-cards" | "self-esteem" | "well-being";
-
 
 interface BookingDetails {
   sessionType: "in-person" | "online";
@@ -31,157 +19,251 @@ interface BookingDetails {
   time: string;
 }
 
-export default function App() {
-  const [currentScreen, setCurrentScreen] = useState<Screen>("landing");
-  const [currentActivity, setCurrentActivity] = useState<ActivityType | null>(
-    null
-  );
-  const [selectedProblem, setSelectedProblem] = useState<string>("");
-  const [activityAnswers, setActivityAnswers] = useState<string[]>([]);
-  const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(
-    null
-  );
+interface AppContextType {
+  currentActivity: ActivityType | null;
+  setCurrentActivity: (activity: ActivityType | null) => void;
+  selectedProblem: string;
+  setSelectedProblem: (problem: string) => void;
+  activityAnswers: string[];
+  setActivityAnswers: (answers: string[]) => void;
+  bookingDetails: BookingDetails | null;
+  setBookingDetails: (details: BookingDetails | null) => void;
+  resetState: () => void;
+}
 
-  const handleLandingComplete = () => {
-    setCurrentScreen("main-office");
-  };
+const AppContext = createContext<AppContextType | null>(null);
+
+export const useAppContext = () => {
+  const context = useContext(AppContext);
+  if (!context) throw new Error("useAppContext must be used within AppProvider");
+  return context;
+};
+
+// Landing page wrapper component
+function LandingPage() {
+  const navigate = useNavigate();
+  return (
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <LandingTrustExercise onStart={() => navigate("/office")} />
+    </div>
+  );
+}
+
+// Main Office wrapper component
+function MainOfficePage() {
+  const navigate = useNavigate();
+  const { setCurrentActivity } = useAppContext();
 
   const handleActivitySelect = (activityId: string) => {
     if (activityId === "problem-cards") {
       setCurrentActivity("problem-cards");
-      setCurrentScreen("problem-selection");
+      navigate("/problem-selection");
     } else if (activityId === "self-esteem") {
       setCurrentActivity("self-esteem");
-      setCurrentScreen("self-esteem");
+      navigate("/self-esteem");
     } else if (activityId === "well-being") {
       setCurrentActivity("well-being");
-      setCurrentScreen("well-being");
+      navigate("/well-being");
     }
   };
 
+  return <MainOffice onActivitySelect={handleActivitySelect} />;
+}
+
+// Problem Selection wrapper component
+function ProblemSelectionPage() {
+  const navigate = useNavigate();
+  const { setSelectedProblem } = useAppContext();
+
   const handleProblemSelect = (problem: string) => {
     setSelectedProblem(problem);
-    setCurrentScreen("question-flow");
-  };
-
-  const handleQuestionFlowComplete = (answers: string[]) => {
-    setActivityAnswers(answers);
-    setCurrentScreen("analysis");
-  };
-
-  const handleSelfEsteemComplete = (responses: number[]) => {
-    // Convert numbers to strings for compatibility with AnalysisReport
-    setActivityAnswers(responses.map(String));
-    setCurrentScreen("analysis");
-  };
-
-  const handleWellBeingComplete = (responses: number[]) => {
-    // Convert numbers to strings for compatibility with AnalysisReport
-    setActivityAnswers(responses.map(String));
-    setCurrentScreen("analysis");
-  };
-
-  const handleBookSession = () => {
-    setCurrentScreen("booking");
-  };
-
-  const handleTryAnother = () => {
-    setCurrentScreen("main-office");
-    setCurrentActivity(null);
-    setSelectedProblem("");
-    setActivityAnswers([]);
-  };
-
-  const handleBookingComplete = (details: BookingDetails) => {
-    setBookingDetails(details);
-    setCurrentScreen("dashboard");
-  };
-
-  const handleBackToOffice = () => {
-    setCurrentScreen("main-office");
-    setCurrentActivity(null);
-    setSelectedProblem("");
-    setActivityAnswers([]);
+    navigate("/question-flow");
   };
 
   return (
+    <ProblemSelection
+      isOpen={true}
+      onClose={() => navigate("/office")}
+      onSelect={handleProblemSelect}
+    />
+  );
+}
 
-    <div
+// Question Flow wrapper component
+function QuestionFlowPage() {
+  const navigate = useNavigate();
+  const { selectedProblem, setActivityAnswers } = useAppContext();
 
-      className="min-h-screen"
-      style={{ backgroundColor: "var(--bg-primary)" }}
-    >
+  const handleComplete = (answers: string[]) => {
+    setActivityAnswers(answers);
+    navigate("/analysis");
+  };
+
+  return (
+    <QuestionFlow
+      problem={selectedProblem}
+      onComplete={handleComplete}
+      onBack={() => navigate("/problem-selection")}
+    />
+  );
+}
+
+// Self Esteem Test wrapper component
+function SelfEsteemPage() {
+  const navigate = useNavigate();
+  const { setActivityAnswers } = useAppContext();
+
+  const handleComplete = (responses: number[]) => {
+    setActivityAnswers(responses.map(String));
+    navigate("/analysis");
+  };
+
+  return (
+    <SelfEsteemTest
+      onComplete={handleComplete}
+      onBack={() => navigate("/office")}
+    />
+  );
+}
+
+// Well Being Test wrapper component
+function WellBeingPage() {
+  const navigate = useNavigate();
+  const { setActivityAnswers } = useAppContext();
+
+  const handleComplete = (responses: number[]) => {
+    setActivityAnswers(responses.map(String));
+    navigate("/analysis");
+  };
+
+  return (
+    <WellBeingTest
+      onComplete={handleComplete}
+      onBack={() => navigate("/office")}
+    />
+  );
+}
+
+// Analysis Report wrapper component
+function AnalysisPage() {
+  const navigate = useNavigate();
+  const { currentActivity, selectedProblem, activityAnswers, resetState } = useAppContext();
+
+  if (!currentActivity) {
+    return <Navigate to="/office" replace />;
+  }
+
+  const handleTryAnother = () => {
+    resetState();
+    navigate("/office");
+  };
+
+  return (
+    <AnalysisReport
+      problem={selectedProblem}
+      answers={activityAnswers}
+      testType={currentActivity}
+      onBookSession={() => navigate("/booking")}
+      onTryAnother={handleTryAnother}
+    />
+  );
+}
+
+// Booking Flow wrapper component
+function BookingPage() {
+  const navigate = useNavigate();
+  const { setBookingDetails } = useAppContext();
+
+  const handleComplete = (details: BookingDetails) => {
+    setBookingDetails(details);
+    navigate("/dashboard");
+  };
+
+  return (
+    <BookingFlow
+      onComplete={handleComplete}
+      onBack={() => navigate("/analysis")}
+    />
+  );
+}
+
+// Dashboard wrapper component
+function DashboardPage() {
+  const navigate = useNavigate();
+  const { bookingDetails, resetState } = useAppContext();
+
+  const handleBackToOffice = () => {
+    resetState();
+    navigate("/office");
+  };
+
+  return (
+    <Dashboard
+      onBackToHome={handleBackToOffice}
+      bookingDetails={bookingDetails}
+    />
+  );
+}
+
+// App Layout with ReactPlayer
+function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)" }}>
       <ReactPlayer
-        src={"/RelaxingBackgroundMusic.mp3"} // Path to your audio file
-        playing={true} // Start playing
-        loop={true}   // Continuous playback
-        volume={0.3}  // Set desired volume
-        height="0"    // Hide the player
+        url="/RelaxingBackgroundMusic.mp3"
+        playing={true}
+        loop={true}
+        volume={0.3}
+        height="0"
         width="0"
       />
-      {currentScreen === "landing" && (
-        <div className="min-h-screen flex items-center justify-center px-4">
-          <LandingTrustExercise onStart={handleLandingComplete} />
-        </div>
-      )}
-
-      {currentScreen === "main-office" && (
-        <MainOffice onActivitySelect={handleActivitySelect} />
-      )}
-
-      {currentScreen === "problem-selection" && (
-        <ProblemSelection
-          isOpen={true}
-          onClose={() => setCurrentScreen("main-office")}
-          onSelect={handleProblemSelect}
-        />
-      )}
-
-      {currentScreen === "question-flow" && (
-        <QuestionFlow
-          problem={selectedProblem}
-          onComplete={handleQuestionFlowComplete}
-          onBack={() => setCurrentScreen("problem-selection")}
-        />
-      )}
-
-      {currentScreen === "self-esteem" && (
-        <SelfEsteemTest
-          onComplete={handleSelfEsteemComplete}
-          onBack={() => setCurrentScreen("main-office")}
-        />
-      )}
-
-      {currentScreen === "well-being" && (
-        <WellBeingTest
-          onComplete={handleWellBeingComplete}
-          onBack={() => setCurrentScreen("main-office")}
-        />
-      )}
-
-      {currentScreen === "analysis" && currentActivity && (
-        <AnalysisReport
-          problem={selectedProblem}
-          answers={activityAnswers}
-          testType={currentActivity}
-          onBookSession={handleBookSession}
-          onTryAnother={handleTryAnother}
-        />
-      )}
-
-      {currentScreen === "booking" && (
-        <BookingFlow
-          onComplete={handleBookingComplete}
-          onBack={() => setCurrentScreen("analysis")}
-        />
-      )}
-
-      {currentScreen === "dashboard" && (
-        <Dashboard
-          onBackToHome={handleBackToOffice}
-          bookingDetails={bookingDetails}
-        />
-      )}
+      {children}
     </div>
+  );
+}
+
+export default function App() {
+  const [currentActivity, setCurrentActivity] = useState<ActivityType | null>(null);
+  const [selectedProblem, setSelectedProblem] = useState<string>("");
+  const [activityAnswers, setActivityAnswers] = useState<string[]>([]);
+  const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(null);
+
+  const resetState = () => {
+    setCurrentActivity(null);
+    setSelectedProblem("");
+    setActivityAnswers([]);
+  };
+
+  const contextValue: AppContextType = {
+    currentActivity,
+    setCurrentActivity,
+    selectedProblem,
+    setSelectedProblem,
+    activityAnswers,
+    setActivityAnswers,
+    bookingDetails,
+    setBookingDetails,
+    resetState,
+  };
+
+  return (
+    <BrowserRouter>
+      <AppContext.Provider value={contextValue}>
+        <AppLayout>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/office" element={<MainOfficePage />} />
+            <Route path="/problem-selection" element={<ProblemSelectionPage />} />
+            <Route path="/question-flow" element={<QuestionFlowPage />} />
+            <Route path="/self-esteem" element={<SelfEsteemPage />} />
+            <Route path="/well-being" element={<WellBeingPage />} />
+            <Route path="/analysis" element={<AnalysisPage />} />
+            <Route path="/booking" element={<BookingPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </AppLayout>
+      </AppContext.Provider>
+    </BrowserRouter>
   );
 }
